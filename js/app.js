@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const targetId = link.getAttribute("data-target");
       if (!targetId) return; // Ignore links without data-targets
 
-      // 1. Switch active styling on navigation tabs
+      // Switch active styling on navigation tabs
       navLinks.forEach(item => item.classList.remove("active"));
       link.classList.add("active");
 
-      // 2. Hide all pages and show the active one
+      // Display the active page and hide others
       pages.forEach(page => {
         if (page.id === targetId) {
           page.style.display = "block";

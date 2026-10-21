@@ -1,0 +1,1 @@
+RPSM is a restaurant production and supply-chain management platform that uses recipes and sales data to estimate resource use in a culinary establishment.

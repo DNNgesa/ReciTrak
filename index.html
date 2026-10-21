@@ -3,11 +3,73 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="css/style.css">
         <title>ReciTrak</title>
     </head>
     <body>
-        <h1>Hello World</h1>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">ReciTrak</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- DATA-TARGETS LINKING TABS TO SECTION IDs -->
+                         <li class="nav-item">
+                            <a class="nav-link active" data-target="menu" href="#">MENU</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-target="recipes" href="#">RECIPES</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-target="inventory" href="#">INVENTORY</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-target="supply-chain" href="#">SUPPLY-CHAIN</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-target="about" href="#">ABOUT</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+                        <button class="btn btn-outline-success" type="submit">SEARCH</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+<!-- PAGE SECTIONS CONTAINER -->
+<div class="container mt-4">
+  <section id="menu" class="app-page">
+    <h2>Food Items Menu</h2>
+    <p>Manage your food items and pricing here.</p>
+  </section>
+
+  <section id="recipes" class="app-page" style="display: none;">
+    <h2>Recipes</h2>
+    <p>View and manage instructions for dishes.</p>
+  </section>
+
+  <section id="inventory" class="app-page" style="display: none;">
+    <h2>Ingredients & Inventory</h2>
+    <p>Track your stock quantities and restock thresholds.</p>
+  </section>
+
+  <section id="supply-chain" class="app-page" style="display: none;">
+    <h2>Supply Chain Partners</h2>
+    <p>Directory of your verified vendors and suppliers.</p>
+  </section>
+
+  <section id="about" class="app-page" style="display: none;">
+    <h2>About ReciTrak</h2>
+    <p>Kitchen Management Platform.</p>
+  </section>
+</div>
+
+
+        
 
         <script src="js/app.js"></script>
     </body>

@@ -41,24 +41,137 @@
         </nav>
 
 
+    <div class="container mt-4">
+    <!-- MENU ITEMS SECTION -->
+    <section id="menu" class="app-page">
+        <h2>Menu Items</h2>
+        <section id="menu" class="app-page">
+            <div class="row">
+                <!-- MENU FORM -->
+                 <div class="col-md-4 mb-4">
+                    <div class="card p-3 shadow-sm">
+                        <h4>Add Menu Item</h4>
+                        <form id="menuItemForm">
+                            <div class="mb-3">
+                                <label for="itemName" class="form-label">Dish Name</label>
+                                <input type="text" class="form-control" id="itemName" required placeholder="e.g., Mutton Biryani">
+                            </div>
+                            <div class="mb-3">
+                                <label for="itemPrice" class="form-label">Price KES</label>
+                                <input type="number" step="0.01" class="form-control" id="itemPrice" required placeholder="e.g., 700">
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Save Item</button>
+                            <div id="menuFeedback" class="mt-2 small"></div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- ACTIONS -->
+                 <div class="col-md-8">
+                    <div class="card p-3 shadow-sm">
+                        
+                        <h4>Current Menu</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Dish Name</th>
+                                        <th>Price</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="menuTableBody">
 
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+    </section>
+    
+    <!-- RECIPES SECTION -->
+     <section id="recipes" class="app-page" style="display: none;">
+        <div class="card p-4 shadow-sm mb-4 bg-light border-success">
+            <h2 class="mb-1">Recipe Configuration</h2>
+            <p class="text-muted mb-0">Currently configuring recipe for: <span id="activeRecipeDishName" class="fw-bold text-success">No dish selected. Select a dish from Menu Items!</span></p>
+        </div>
+        
+        <div class="row">
+            <!-- RECIPE BUILDER FORM -->
+             <div class="col-md-5 mb-4">
+                <div class="card p-3 shadow-sm">
+                    <h4>Add Ingredients</h4>
+                    <form id="recipeIngredientForm">
+                        <input type="hidden" id="activeRecipeItemId">
+                        <div class="mb-3">
+                            <label for="ingredientName" class="form-label">Ingredient Name</label>
+                            <input type="text" class="form-control" id="ingredientName" required placeholder="e.g., Mutton Steak">
+                        </div>
+                        <div class="mb-3">
+                            <label for="ingredientQty" class="form-label">Quantity Required</label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" class="form-control" id="ingredientQty" required placeholder="e.g., 200">
+                                <input type="text" class="form-control" id="ingredientUnit" required placeholder="e.g., grams, pcs" style="max-width: 100px;">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Add to Recipe Build</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- RECIPE LIST -->
+             <div class="col-md-7">
+                <div class="card p-3 shadow-sm">
+                    <h4>Recipe Build Blueprint</h4>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Ingredient</th>
+                                    <th>Quantity</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recipeTableBody">
+                                <tr><td colspan="3" class="text-center text-muted py-3">Select a dish from the Menu to manage its ingredients.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
 
-        <h1>ReciTrak Demo</h1>
-        <p>Welcome to the ReciTrak Demo!</p>
+<!-- INVENTORY SECTION -->
+ <section id="inventory" class="app-page" style="display: none;">
+    <h2>Inventory Optimization</h2>
+    <p>Monitor real-time stock counts, set minimum reorder thresholds, and log kitchen waste.</p>
+</section>
 
-        <!-- FIXED BOTTOM BG-BODY-TERTIARY FOOTER -->
-<footer class="bg-body-tertiary text-body-secondary border-top py-4 fixed-bottom">
+<!-- SUPPLY CHAIN SECTION -->
+ <section id="supply-chain" class="app-page" style="display: none;">
+    <h2>Supply-Chain Integration</h2>
+    <p>Connect vendor catalogs, view purchase order summaries, and auto-update market pricing values.</p>
+</section>
+</div>
+
+<!-- FOOTER -->
+ <footer class="bg-body-tertiary text-body-secondary border-top py-4 fixed-bottom">
     <div class="container-fluid px-4">
         <div class="row gy-3 align-items-center">
             
-            <!-- Left Section: Branding -->
-            <div class="col-md-4 text-center text-md-start">
+            <!-- Branding -->
+             <div class="col-md-4 text-center text-md-start">
                 <span class="text-body fw-bold h5 mb-0 me-2">ReciTrak</span>
                 <span class="small text-muted d-none d-lg-inline">| Recipe & Production Management</span>
             </div>
-
+            
             <!-- Middle Section: Horizontal Contact Details -->
-            <div class="col-md-4 text-center">
+             <div class="col-md-4 text-center">
                 <span class="small mx-2">
                     <i class="bi bi-envelope-fill text-success me-1"></i>support@recitrak.com
                 </span>
@@ -66,9 +179,9 @@
                     <i class="bi bi-telephone-fill text-success me-1"></i>+254 (0) 700 700 700
                 </span>
             </div>
-
-            <!-- Right Section: Social Media Icons -->
-            <div class="col-md-4 text-center text-md-end">
+            
+            <!-- Social Media  -->
+             <div class="col-md-4 text-center text-md-end">
                 <div class="d-flex justify-content-center justify-content-md-end gap-3">
                     <a href="#" class="text-body-secondary fs-5 link-success" aria-label="Facebook">
                         <i class="bi bi-facebook"></i>
@@ -84,11 +197,11 @@
                     </a>
                 </div>
             </div>
-
         </div>
     </div>
 </footer>
 
-        <script src="../js/demo.js"></script>
-    </body>
+<script src="../js/demo.js"></script>
+
+</body>
 </html>

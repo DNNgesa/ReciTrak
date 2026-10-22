@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/style.css">
+        <title>ReciTrak Demo</title>
+    </head>
+    <body class ="pb-5">
+
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">ReciTrak Demo</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- DATA-TARGETS LINKING TABS TO SECTION IDs -->
+                         <li class="nav-item">
+                            <a class="nav-link active" data-target="menu" href="#">MENU ITEMS</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-target="recipes" href="#">RECIPES</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-target="inventory" href="#">INVENTORY</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-target="supply-chain" href="#">SUPPLY-CHAIN</a>
+                        </li>
+                    </ul>
+                    
+                    <ul class="navbar-nav mb-2 mb-lg-0 me-3">
+                    <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search Menu Items" aria-label="Search"/>
+                        <button class="btn btn-outline-success" type="submit">SEARCH</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+
+
+
+        <h1>ReciTrak Demo</h1>
+        <p>Welcome to the ReciTrak Demo!</p>
+
+        <!-- FIXED BOTTOM BG-BODY-TERTIARY FOOTER -->
+<footer class="bg-body-tertiary text-body-secondary border-top py-4 fixed-bottom">
+    <div class="container-fluid px-4">
+        <div class="row gy-3 align-items-center">
+            
+            <!-- Left Section: Branding -->
+            <div class="col-md-4 text-center text-md-start">
+                <span class="text-body fw-bold h5 mb-0 me-2">ReciTrak</span>
+                <span class="small text-muted d-none d-lg-inline">| Recipe & Production Management</span>
+            </div>
+
+            <!-- Middle Section: Horizontal Contact Details -->
+            <div class="col-md-4 text-center">
+                <span class="small mx-2">
+                    <i class="bi bi-envelope-fill text-success me-1"></i>support@recitrak.com
+                </span>
+                <span class="small mx-2 d-none d-sm-inline">
+                    <i class="bi bi-telephone-fill text-success me-1"></i>+1 (800) 555-TRAK
+                </span>
+            </div>
+
+            <!-- Right Section: Social Media Icons -->
+            <div class="col-md-4 text-center text-md-end">
+                <div class="d-flex justify-content-center justify-content-md-end gap-3">
+                    <a href="#" class="text-body-secondary fs-5 link-success" aria-label="Facebook">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="#" class="text-body-secondary fs-5 link-success" aria-label="X (Twitter)">
+                        <i class="bi bi-twitter-x"></i>
+                    </a>
+                    <a href="#" class="text-body-secondary fs-5 link-success" aria-label="LinkedIn">
+                        <i class="bi bi-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-body-secondary fs-5 link-success" aria-label="Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</footer>
+
+        <script src="../js/demo.js"></script>
+    </body>
+</html>

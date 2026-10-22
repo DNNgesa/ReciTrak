@@ -6,8 +6,7 @@
         <link rel="stylesheet" href="css/style.css">
         <title>ReciTrak</title>
     </head>
-    <body>
-
+    <body class ="pb-5">
 
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
@@ -19,38 +18,15 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <!-- DATA-TARGETS LINKING TABS TO SECTION IDs -->
                         <li class="nav-item">
-                            <a class="nav-link" data-target="about" href="#">ABOUT</a>
+                            <a class="nav-link" data-target="home" href="#">HOME</a>
                         </li>
                          <li class="nav-item">
-                            <a class="nav-link active" data-target="menu" href="#">MENU</a>
+                            <a class="nav-link active" data-target="process" href="#">PROCESS</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-target="recipes" href="#">RECIPES</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-target="inventory" href="#">INVENTORY</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-target="supply-chain" href="#">SUPPLY-CHAIN</a>
+                            <a class="nav-link" data-target="demo" href="#">DEMO</a>
                         </li>
                     </ul>
-                    
-                    <ul class="navbar-nav mb-2 mb-lg-0 me-3">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            More
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">Register Here</a></li>
-                            <li><a class="dropdown-item" href="#">Speak to a Representative</a></li>
-                        </ul>
-                    </li>
-                    </ul>
-
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-                        <button class="btn btn-outline-success" type="submit">SEARCH</button>
-                    </form>
                 </div>
             </div>
         </nav>
@@ -58,7 +34,7 @@
 
 <!-- PAGE SECTIONS CONTAINER -->
 <div class="container mt-4">
-  <section id="about" class="app-page" style="display: none;">
+  <section id="home" class="app-page" style="display: none;">
     <h2>About ReciTrak</h2>
     <p>ReciTrak is an advanced restaurant production and supply chain management platform designed to transform recipes and sales data into actionable operational intelligence. ReciTrak changes the restaurant management paradigm from reactive to proactive by anchoring inventory, procurement, training, and financial analysis to the recipes, thus minimizing waste, securing supply chains, and ensuring the quality of every dish served.</p>
     
@@ -78,34 +54,61 @@
     <h4>Intelligent Inventory Optimization</h4>
     <p>By cross-referencing your recipes with real-time sales data, ReciTrak precisely tracks inventory usage and handles waste management implicitly. The system eliminates stockouts and emergency ordering by automatically alerting relevant stakeholders when resources deplete to minimum levels. To streamline procurement, it instantly generates purchase orders for administrative approval, ensuring the kitchen never grinds to a halt.</p>
   </section>
-  <section id="menu" class="app-page">
-    <h2>Menu</h2>
-    <p>Manage your food items and pricing here.</p>
-
-    <form id="menuForm" class="form-group">
-        <input type="text" id="itemName" placeholder="Item Name (e.g., Beef Pilau)">
-        <button type="submit">Add Item</button>
-    </form>
-
-
-    <ul id="menuContainer" class="menu-list"></ul>
+  
+  <section id="process" class="app-page" style="display: none;">
+    <h2>How it works</h2>
+    <p>Our platform simplifies your workflow by automating reconciliation processes.</p>
   </section>
 
-  <section id="recipes" class="app-page" style="display: none;">
-    <h2>Recipes</h2>
-    <p>View and manage instructions for dishes.</p>
-  </section>
-
-  <section id="inventory" class="app-page" style="display: none;">
-    <h2>Ingredients & Inventory</h2>
-    <p>Track your stock quantities and restock thresholds.</p>
-  </section>
-
-  <section id="supply-chain" class="app-page" style="display: none;">
-    <h2>Supply Chain Partners</h2>
-    <p>Directory of your verified vendors and suppliers.</p>
+  <section id="demo" class="app-page" style="display: none;">
+    <h2>Would you like a live demonstration?</h2>
+    <p>See our platform in action! Schedule a real-time, hands-on walkthrough with one of our product experts today.</p>
   </section>
 </div>
+
+
+<!-- FIXED BOTTOM BG-BODY-TERTIARY FOOTER -->
+<footer class="bg-body-tertiary text-body-secondary border-top py-4 fixed-bottom">
+    <div class="container-fluid px-4">
+        <div class="row gy-3 align-items-center">
+            
+            <!-- Left Section: Branding -->
+            <div class="col-md-4 text-center text-md-start">
+                <span class="text-body fw-bold h5 mb-0 me-2">ReciTrak</span>
+                <span class="small text-muted d-none d-lg-inline">| Recipe & Production Management</span>
+            </div>
+
+            <!-- Middle Section: Horizontal Contact Details -->
+            <div class="col-md-4 text-center">
+                <span class="small mx-2">
+                    <i class="bi bi-envelope-fill text-success me-1"></i>support@recitrak.com
+                </span>
+                <span class="small mx-2 d-none d-sm-inline">
+                    <i class="bi bi-telephone-fill text-success me-1"></i>+1 (800) 555-TRAK
+                </span>
+            </div>
+
+            <!-- Right Section: Social Media Icons -->
+            <div class="col-md-4 text-center text-md-end">
+                <div class="d-flex justify-content-center justify-content-md-end gap-3">
+                    <a href="#" class="text-body-secondary fs-5 link-success" aria-label="Facebook">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="#" class="text-body-secondary fs-5 link-success" aria-label="X (Twitter)">
+                        <i class="bi bi-twitter-x"></i>
+                    </a>
+                    <a href="#" class="text-body-secondary fs-5 link-success" aria-label="LinkedIn">
+                        <i class="bi bi-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-body-secondary fs-5 link-success" aria-label="Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</footer>
 
 
         <script src="js/app.js"></script>

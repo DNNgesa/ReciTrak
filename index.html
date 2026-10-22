@@ -18,10 +18,10 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <!-- DATA-TARGETS LINKING TABS TO SECTION IDs -->
                         <li class="nav-item">
-                            <a class="nav-link" data-target="home" href="#">HOME</a>
+                            <a class="nav-link active" data-target="home" href="#">HOME</a>
                         </li>
                          <li class="nav-item">
-                            <a class="nav-link active" data-target="process" href="#">PROCESS</a>
+                            <a class="nav-link" data-target="process" href="#">PROCESS</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-target="demo" href="#">DEMO</a>
@@ -63,32 +63,52 @@
   <section id="demo" class="app-page" style="display: none;">
     <h2>Would you like a live demonstration?</h2>
     <p>See our platform in action! Schedule a real-time, hands-on walkthrough with one of our product experts today.</p>
+      <form id="demoForm" class="mt-4" style="max-width: 500px;">
+    <div class="mb-3">
+      <label for="fullName" class="form-label">Full Name</label>
+      <input type="text" class="form-control" id="fullName" required placeholder="Sunny Sky">
+    </div>
+    <div class="mb-3">
+      <label for="phoneNumber" class="form-label">Phone Number</label>
+      <input type="tel" class="form-control" id="phoneNumber" required placeholder="+254 (0) 700 000 000">
+    </div>
+    <div class="mb-3">
+      <label for="emailAddress" class="form-label">Email Address</label>
+      <input type="email" class="form-control" id="emailAddress" required placeholder="sunny.sky@company.com">
+    </div>
+    <div class="mb-3">
+      <label for="organization" class="form-label">Organization / Restaurant Name</label>
+      <input type="text" class="form-control" id="organization" required placeholder="Culinary Group Ltd">
+    </div>
+    <button type="submit" class="btn btn-success">Request Demo</button>
+    <div id="formFeedback" class="mt-3 small"></div>
+  </form>
   </section>
 </div>
 
 
-<!-- FIXED BOTTOM BG-BODY-TERTIARY FOOTER -->
+<!-- FOOTER -->
 <footer class="bg-body-tertiary text-body-secondary border-top py-4 fixed-bottom">
     <div class="container-fluid px-4">
         <div class="row gy-3 align-items-center">
             
-            <!-- Left Section: Branding -->
+            <!-- Branding -->
             <div class="col-md-4 text-center text-md-start">
                 <span class="text-body fw-bold h5 mb-0 me-2">ReciTrak</span>
                 <span class="small text-muted d-none d-lg-inline">| Recipe & Production Management</span>
             </div>
 
-            <!-- Middle Section: Horizontal Contact Details -->
+            <!-- Contact Details -->
             <div class="col-md-4 text-center">
                 <span class="small mx-2">
                     <i class="bi bi-envelope-fill text-success me-1"></i>support@recitrak.com
                 </span>
                 <span class="small mx-2 d-none d-sm-inline">
-                    <i class="bi bi-telephone-fill text-success me-1"></i>+1 (800) 555-TRAK
+                    <i class="bi bi-telephone-fill text-success me-1"></i>+254 (0) 700 700 700
                 </span>
             </div>
 
-            <!-- Right Section: Social Media Icons -->
+            <!-- Social Media Icons -->
             <div class="col-md-4 text-center text-md-end">
                 <div class="d-flex justify-content-center justify-content-md-end gap-3">
                     <a href="#" class="text-body-secondary fs-5 link-success" aria-label="Facebook">

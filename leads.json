@@ -1,0 +1,28 @@
+{
+  "leads": [
+    {
+      "name": "Drake Ngesa",
+      "phone": "0700322833",
+      "email": "drake.ngesa@student.moringaschool.com",
+      "organization": "Moringa School",
+      "createdAt": "2026-10-22T10:38:04.389Z",
+      "id": 1
+    },
+    {
+      "name": "Ngesa Drake",
+      "phone": "0740207060",
+      "email": "pro.drakengesa@gmail.com",
+      "organization": "Moringa School",
+      "createdAt": "2026-10-22T10:44:29.067Z",
+      "id": 2
+    },
+    {
+      "name": "Denver Bagaka",
+      "phone": "0733 903 617",
+      "email": "denver.bagaka@gmail.com",
+      "organization": "Kenya Power",
+      "createdAt": "2026-10-22T10:55:25.697Z",
+      "id": 3
+    }
+  ]
+}

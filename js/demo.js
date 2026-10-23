@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuTableBody = document.getElementById("menuTableBody");
   const menuFeedback = document.getElementById("menuFeedback");
   
-  const menuItemsEndpoint = "http://localhost:3001/menuItems";
-  const recipeEndpoint = "http://localhost:3001/recipes";
+  const menuItemsEndpoint = "https://github.io";
+  const recipeEndpoint = "https://github.io";
 
   // Function to Load Items
   async function loadMenuItems() {

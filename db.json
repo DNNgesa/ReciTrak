@@ -1,0 +1,25 @@
+{
+  "leads": [{
+      "name": "Drake Ngesa",
+      "phone": "0700322833",
+      "email": "drake.ngesa@student.moringaschool.com",
+      "organization": "Moringa School",
+      "createdAt": "2026-10-22T10:38:04.389Z",
+      "id": 1
+    }
+  ],
+  "menuItems": [ {
+      "name": "Beef Pilau",
+      "price": 550,
+      "id": 1
+    }
+  ],
+  "recipes": [{
+      "menuItemId": "1",
+      "name": "Beef",
+      "quantity": 1,
+      "unit": "Kilogram",
+      "id": 1
+    }
+  ]
+}

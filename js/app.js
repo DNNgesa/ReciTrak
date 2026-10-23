@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       try {
-        const response = await fetch("http://localhost:3000/leads", {
+        const response = await fetch("https://github.io", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

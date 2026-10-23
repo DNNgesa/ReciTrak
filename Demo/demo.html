@@ -80,7 +80,7 @@
                                         <th class="text-end">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="menuTableBody">
+                                <tbody id="menuTable">
 
                                 </tbody>
                             </table>
@@ -135,7 +135,7 @@
                                     <th class="text-end">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="recipeTableBody">
+                            <tbody id="recipeTable">
                                 <tr><td colspan="3" class="text-center text-muted py-3">Select a dish from the Menu to manage its ingredients.</td></tr>
                             </tbody>
                         </table>
@@ -147,16 +147,114 @@
 </section>
 
 <!-- INVENTORY SECTION -->
- <section id="inventory" class="app-page" style="display: none;">
-    <h2>Inventory Optimization</h2>
-    <p>Monitor real-time stock counts, set minimum reorder thresholds, and log kitchen waste.</p>
+<section id="inventory" class="app-page" style="display: none;">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card p-3 shadow-sm">
+                <h4>Log Stock Count</h4>
+                <form id="inventoryForm">
+                    <div class="mb-3">
+                        <label for="invIngredientName" class="form-label">Ingredient</label>
+                        <input type="text" class="form-control" id="invIngredientName" required placeholder="e.g., Cheddar Cheese Slices">
+                    </div>
+                    <div class="mb-3">
+                        <label for="invQuantity" class="form-label">Current Stock Quantity</label>
+                        <div class="input-group">
+                            <input type="number" step="0.01" class="form-control" id="invQuantity" required placeholder="e.g., 500">
+                            <input type="text" class="form-control" id="invUnit" required placeholder="e.g., pcs, kg, g" style="max-width: 100px;">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="invMinThreshold" class="form-label">Minimum Threshold Alert</label>
+                        <input type="number" step="0.01" class="form-control" id="invMinThreshold" required placeholder="e.g., 50 (Triggers warning below this)">
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Log Inventory</button>
+                    <div id="inventoryFeedback" class="mt-2 small"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- INVENTORY TABLE DISPLAY -->
+        <div class="col-md-8">
+            <div class="card p-3 shadow-sm">
+                <h4>Stock Room Ledger</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>On Hand</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
+
 <!-- SUPPLY CHAIN SECTION -->
- <section id="supply-chain" class="app-page" style="display: none;">
-    <h2>Supply-Chain Integration</h2>
-    <p>Connect vendor catalogs, view purchase order summaries, and auto-update market pricing values.</p>
+<section id="supply-chain" class="app-page" style="display: none;">
+    <div class="row">
+        <!-- ADD SUPPLY VENDOR -->
+        <div class="col-md-4 mb-4">
+            <div class="card p-3 shadow-sm">
+                <h4>Link Vendor Item</h4>
+                <form id="supplyForm">
+                    <div class="mb-3">
+                        <label for="vendorName" class="form-label">Vendor Name</label>
+                        <input type="text" class="form-control" id="vendorName" required placeholder="e.g., Prime Meat Wholesalers">
+                    </div>
+                    <div class="mb-3">
+                        <label for="supplyItem" class="form-label">Resource / Material</label>
+                        <input type="text" class="form-control" id="supplyItem" required placeholder="e.g., Prime Beef Patties">
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="supplyCost" class="form-label">Unit Cost KES</label>
+                            <input type="number" step="0.01" class="form-control" id="supplyCost" required placeholder="e.g., 4.50">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="orderQty" class="form-label">Order Quantity</label>
+                            <input type="number" class="form-control" id="orderQty" required placeholder="e.g., 100">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Create Procurement Order</button>
+                    <div id="supplyFeedback" class="mt-2 small"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SUPPLY CHAIN DISPATCH TABLE -->
+        <div class="col-md-8">
+            <div class="card p-3 shadow-sm">
+                <h4>Procurement Ledger</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Vendor</th>
+                                <th>Item</th>
+                                <th>Unit Cost</th>
+                                <th>Order Qty</th>
+                                <th>Total Cost</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="supplyTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+
 </div>
 
 <!-- FOOTER -->

@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // MENU ITEM DATABASE 
   const menuItemForm = document.getElementById("menuItemForm");
-  const menuTableBody = document.getElementById("menuTableBody");
+  const menuTable = document.getElementById("menuTable");
   const menuFeedback = document.getElementById("menuFeedback");
   
   const menuItemsEndpoint = "https://github.io";
@@ -46,10 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) throw new Error("Could not fetch menu items.");
       
       const items = await response.json();
-      menuTableBody.innerHTML = ""; 
+      menuTable.innerHTML = ""; 
 
       if (items.length === 0) {
-        menuTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">No menu items found. Add one on the left!</td></tr>`;
+        menuTable.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">No menu items found. Add one on the left!</td></tr>`;
         return;
       }
 
@@ -149,10 +149,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const activeText = document.getElementById("activeRecipeDishName");
   const activeHiddenId = document.getElementById("activeRecipeItemId");
   const recipeIngredientForm = document.getElementById("recipeIngredientForm");
-  const recipeTableBody = document.getElementById("recipeTableBody");
+  const recipeTable = document.getElementById("recipeTable");
 
   window.actionRecipe = function(id) {
-    const tableRows = menuTableBody.querySelectorAll("tr");
+    const tableRows = menuTable.querySelectorAll("tr");
     let targetDishName = "Unknown Item";
     
     tableRows.forEach(row => {
@@ -190,10 +190,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) throw new Error("Could not fetch ingredients.");
       
       const ingredients = await response.json();
-      recipeTableBody.innerHTML = "";
+      recipeTable.innerHTML = "";
 
       if (ingredients.length === 0) {
-        recipeTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">No ingredients added yet!</td></tr>`;
+        recipeTable.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">No ingredients added yet!</td></tr>`;
         return;
       }
 
@@ -206,11 +206,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <button class="btn btn-sm btn-outline-danger" onclick="removeIngredient('${ing.id}', '${itemId}')">REMOVE</button>
           </td>
         `;
-        recipeTableBody.appendChild(row);
+        recipeTable.appendChild(row);
       });
     } catch (error) {
       console.error(error);
-      recipeTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error loading recipe data.</td></tr>`;
+      recipeTable.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error loading recipe data.</td></tr>`;
     }
   }
 
@@ -263,3 +263,211 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadMenuItems();
 });
+
+
+
+ // INVENTORY 
+  const inventoryForm = document.getElementById("inventoryForm");
+  const inventoryTable = document.getElementById("inventoryTable");
+  const inventoryFeedback = document.getElementById("inventoryFeedback");
+  const inventoryEndpoint = "https://github.io";
+
+  // Fetch inventory 
+  async function loadInventoryItems() {
+    try {
+      const response = await fetch(inventoryEndpoint);
+      if (!response.ok) throw new Error("Could not retrieve inventory.");
+      
+      const stockItems = await response.json();
+      inventoryTable.innerHTML = ""; 
+
+      if (stockItems.length === 0) {
+        inventoryTable.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No inventory tracked yet!</td></tr>`;
+        return;
+      }
+
+      // Loop through items
+      stockItems.forEach(item => {
+        const qty = parseFloat(item.quantity);
+        const limit = parseFloat(item.minThreshold);
+        
+        // Low Inventory Alert!
+        let statusBadge = `<span class="badge bg-success">Healthy Stock</span>`;
+        if (qty <= limit) {
+          statusBadge = `<span class="badge bg-danger animate-pulse">Low Stock Alert</span>`;
+        }
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="fw-bold">${item.name}</td>
+          <td>${qty} <span class="text-muted small">${item.unit}</span></td>
+          <td>${statusBadge}</td>
+          <td class="text-end">
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary" onclick="updateStockLevel('${item.id}', '${item.name}', ${qty})">ADJUST</button>
+              <button class="btn btn-outline-danger" onclick="removeInventoryItem('${item.id}')">REMOVE</button>
+            </div>
+          </td>
+        `;
+        inventoryTable.appendChild(row);
+      });
+    } catch (error) {
+      console.error("Inventory Fetch Error:", error);
+      inventoryTable.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Error loading inventory ledger logs.</td></tr>`;
+    }
+  }
+
+  // Form Submission 
+  if (inventoryForm) {
+    inventoryForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const newStock = {
+        name: document.getElementById("invIngredientName").value,
+        quantity: parseFloat(document.getElementById("invQuantity").value),
+        unit: document.getElementById("invUnit").value,
+        minThreshold: parseFloat(document.getElementById("invMinThreshold").value)
+      };
+
+      try {
+        const response = await fetch(inventoryEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newStock)
+        });
+
+        if (response.ok) {
+          inventoryFeedback.className = "mt-2 small text-success fw-bold";
+          inventoryFeedback.textContent = "Inventory level logged successfully!";
+          inventoryForm.reset();
+          loadInventoryItems(); 
+        }
+      } catch (error) {
+        console.error("Inventory Error:", error);
+      }
+    });
+  }
+
+  // Adjust Stock Count 
+  window.updateStockLevel = async function(id, name, currentQty) {
+    const newQty = prompt(`Enter new inventory balance for "${name}":`, currentQty);
+    if (newQty === null || newQty === "" || isNaN(newQty)) return;
+
+    try {
+      const response = await fetch(`${inventoryEndpoint}/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity: parseFloat(newQty) })
+      });
+      if (response.ok) loadInventoryItems();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Delete Item
+  window.removeInventoryItem = async function(id) {
+    if (confirm("Stop tracking this inventory item line?")) {
+      try {
+        const response = await fetch(`${inventoryEndpoint}/${id}`, { method: "DELETE" });
+        if (response.ok) loadInventoryItems();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+
+  loadInventoryItems();
+
+
+  // SUPPLY CHAIN
+  const supplyForm = document.getElementById("supplyForm");
+  const supplyTable = document.getElementById("supplyTable");
+  const supplyFeedback = document.getElementById("supplyFeedback");
+  const supplyEndpoint = "https://github.io";
+
+  // Function to pull procurement orders 
+  async function loadSupplyOrders() {
+    try {
+      const response = await fetch(supplyEndpoint);
+      if (!response.ok) throw new Error("Could not fetch supply chain logs.");
+      
+      const orders = await response.json();
+      supplyTable.innerHTML = "";
+
+      if (orders.length === 0) {
+        supplyTable.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">No active procurement logs found.</td></tr>`;
+        return;
+      }
+
+      
+      orders.forEach(order => {
+        const cost = parseFloat(order.unitCost);
+        const qty = parseFloat(order.quantity);
+        const totalOrderValue = cost * qty; 
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="fw-bold text-secondary">${order.vendor}</td>
+          <td>${order.itemName}</td>
+          <td>$${cost.toFixed(2)}</td>
+          <td>${qty}</td>
+          <td class="fw-bold text-success">$${totalOrderValue.toFixed(2)}</td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-outline-danger" onclick="cancelProcurementOrder('${order.id}')">DELETE</button>
+          </td>
+        `;
+        supplyTable.appendChild(row);
+      });
+    } catch (error) {
+      console.error(error);
+      supplyTable.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Error loading procurement systems database.</td></tr>`;
+    }
+  }
+
+  // Procurement Form Submission
+  if (supplyForm) {
+    supplyForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const newOrder = {
+        vendor: document.getElementById("vendorName").value,
+        itemName: document.getElementById("supplyItem").value,
+        unitCost: parseFloat(document.getElementById("supplyCost").value),
+        quantity: parseInt(document.getElementById("orderQty").value)
+      };
+
+      try {
+        const response = await fetch(supplyEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newOrder)
+        });
+
+        if (response.ok) {
+          supplyFeedback.className = "mt-2 small text-success fw-bold";
+          supplyFeedback.textContent = "Procurement order logged and calculated successfully!";
+          supplyForm.reset();
+          loadSupplyOrders();
+        }
+      } catch (error) {
+        console.error("Procurement Database Post Error:", error);
+      }
+    });
+  }
+
+  // Cancel Order
+  window.cancelProcurementOrder = async function(id) {
+    if (confirm("Void this procurement item log line permanently?")) {
+      try {
+        const response = await fetch(`${supplyEndpoint}/${id}`, { method: "DELETE" });
+        if (response.ok) loadSupplyOrders();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  
+  loadSupplyOrders();

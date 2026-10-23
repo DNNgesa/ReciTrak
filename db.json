@@ -21,5 +21,11 @@
       "unit": "Kilogram",
       "id": 1
     }
+  ],
+  "inventory": [
+
+  ],
+  "supply": [
+    
   ]
 }

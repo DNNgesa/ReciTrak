@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuTable = document.getElementById("menuTable");
   const menuFeedback = document.getElementById("menuFeedback");
   
-  const menuItemsEndpoint = "https://github.io";
-  const recipeEndpoint = "https://github.io";
+  const menuItemsEndpoint = "https://dnngesa.github.io/ReciTek/db.json";
+  const recipeEndpoint = "https://dnngesa.github.io/ReciTek/db.json";
 
   // Function to Load Items
   async function loadMenuItems() {
@@ -270,7 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const inventoryForm = document.getElementById("inventoryForm");
   const inventoryTable = document.getElementById("inventoryTable");
   const inventoryFeedback = document.getElementById("inventoryFeedback");
-  const inventoryEndpoint = "https://github.io";
+  const inventoryEndpoint = "https://dnngesa.github.io/ReciTek/db.json";
 
   // Fetch inventory 
   async function loadInventoryItems() {
@@ -385,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const supplyForm = document.getElementById("supplyForm");
   const supplyTable = document.getElementById("supplyTable");
   const supplyFeedback = document.getElementById("supplyFeedback");
-  const supplyEndpoint = "https://github.io";
+  const supplyEndpoint = "https://dnngesa.github.io/ReciTek/db.json";
 
   // Function to pull procurement orders 
   async function loadSupplyOrders() {

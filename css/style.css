@@ -4,3 +4,133 @@
 body {
     padding-bottom: 120px !important; 
 }
+
+.main-container {
+    margin-top: 100px;
+}
+ 
+.navbar-fixed-top {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+}
+
+.hero {
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    min-height: 400px;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 40px;
+    padding: 20px;
+    border-radius: 0;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin: 40px 0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.feature-box {
+    background-color: #fff;
+    padding: 30px 20px;
+    height: 100%;
+}
+
+.step-icon-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid currentColor;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.step-content-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.step-text {
+    flex: 1;
+}
+
+.step-image-box {
+    width: 220px;
+    height: 140px;
+    background-color: rgba(0,0,0,0.03);
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.step-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.fixed-footer-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 1030;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .features {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        background-color: transparent;
+    }
+    .feature-box {
+        border-left: 4px solid currentColor;
+        background-color: rgba(0,0,0,0.02);
+        border-radius: 0 8px 8px 0;
+    }
+    .step-content-layout {
+        flex-direction: column;
+    }
+    .step-image-box {
+        width: 100%;
+        height: 160px;
+    }
+}

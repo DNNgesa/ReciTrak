@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // MOCK APi
-  const leadsEndpoint = "https://6adf401b8e42963c8d5da4f5.mockapi.io/"
+  const leadsEndpoint = "https://6adf401b8e42963c8d5da4f5.mockapi.io/leads"
 
   // DATABASE INPUT FORM LOGIC 
   const demoForm = document.getElementById("demoForm");

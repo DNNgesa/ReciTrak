@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuTableBody = document.getElementById("menuTableBody");
   const menuFeedback = document.getElementById("menuFeedback");
   
-  const menuItemsEndpoint = "https://dnngesa.github.io/ReciTrak/db.json";
-  const recipeEndpoint = "https://dnngesa.github.io/ReciTrak/db.json";
+  const menuItemsEndpoint = "http://localhost:3000/menuItems";
+  const recipeEndpoint = "http://localhost:3000/recipes";
 
   // Function to Load Items
   async function loadMenuItems() {
@@ -323,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const inventoryForm = document.getElementById("inventoryForm");
   const inventoryTableBody = document.getElementById("inventoryTableBody");
   const inventoryFeedback = document.getElementById("inventoryFeedback");
-  const inventoryEndpoint = "https://dnngesa.github.io/ReciTrak/db.json";
+  const inventoryEndpoint = "http://localhost:3000/inventory";
 
   // Fetch inventory 
   async function loadInventoryItems() {
@@ -439,7 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const supplyForm = document.getElementById("supplyForm");
   const supplyTable = document.getElementById("supplyTableBody");
   const supplyFeedback = document.getElementById("supplyFeedback");
-  const supplyEndpoint = "https://dnngesa.github.io/ReciTrak/db.json";
+  const supplyEndpoint = "http://localhost:3000/supply";
 
   // Function to pull procurement orders 
   async function loadSupplyOrders() {

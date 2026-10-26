@@ -1,5 +1,6 @@
 {
-  "leads": [{
+  "leads": [
+    {
       "name": "Drake Ngesa",
       "phone": "0700322833",
       "email": "drake.ngesa@student.moringaschool.com",
@@ -8,24 +9,52 @@
       "id": 1
     }
   ],
-  "menuItems": [ {
+  "menuItems": [
+    {
       "name": "Beef Pilau",
       "price": 550,
-      "id": 1
+      "id": 1,
+      "image": "https://sheenaskitchen.com/wp-content/uploads/2017/08/Swahili-Kenyan-Beef-Pilau.jpg"
+    },
+    {
+      "name": "Fish Curry",
+      "price": 700,
+      "id": 2,
+      "image": "https://www.thedeliciouscrescent.com/wp-content/uploads/2023/07/Fish-Curry-3.jpg"
     }
   ],
-  "recipes": [{
+  "recipes": [
+    {
+      "menuItemId": "2",
+      "name": "fish",
+      "quantity": 500,
+      "unit": "Grams",
+      "id": 4
+    },
+    {
       "menuItemId": "1",
-      "name": "Beef",
-      "quantity": 1,
-      "unit": "Kilogram",
-      "id": 1
+      "name": "Beef Steak",
+      "quantity": 500,
+      "unit": "Grams",
+      "id": 5
     }
   ],
   "inventory": [
-
+    {
+      "name": "Beef",
+      "quantity": 20,
+      "unit": "Kilograms",
+      "minThreshold": 2,
+      "id": 1
+    }
   ],
   "supply": [
-    
+    {
+      "vendor": "Morendat Premium Beef",
+      "itemName": "Beef",
+      "unitCost": 1000,
+      "quantity": 100,
+      "id": 3
+    }
   ]
 }

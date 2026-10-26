@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       try {
-        const response = await fetch("https://dnngesa.github.io/ReciTrak/db.json", {
+        const response = await fetch("http://localhost:3000/leads", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

@@ -60,11 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (response.ok) {
           pages.forEach(page => {
-            page.style.display = page.id === "demo" ? "block" : "none";
+            page.style.display = page.id === "more" ? "block" : "none";
           });
 
           navLinks.forEach(item => {
-            if (item.getAttribute("data-target") === "demo") {
+            if (item.getAttribute("data-target") === "more") {
               item.classList.add("active");
             } else {
               item.classList.remove("active");

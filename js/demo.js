@@ -175,10 +175,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const activeText = document.getElementById("activeRecipeDishName");
   const activeHiddenId = document.getElementById("activeRecipeItemId");
   const recipeIngredientForm = document.getElementById("recipeIngredientForm");
-  const recipeTable = document.getElementById("recipeTable");
+  const recipeTableBody = document.getElementById("recipeTableBody");
 
   window.actionRecipe = function(id) {
-    const tableRows = menuTable.querySelectorAll("tr");
+    const tableRows = menuTableBody.querySelectorAll("tr");
     let targetDishName = "Unknown Item";
     
     tableRows.forEach(row => {
@@ -216,10 +216,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) throw new Error("Could not fetch ingredients.");
       
       const ingredients = await response.json();
-      recipeTable.innerHTML = "";
+      recipeTableBody.innerHTML = "";
 
       if (ingredients.length === 0) {
-        recipeTable.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">No ingredients added yet!</td></tr>`;
+        recipeTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">No ingredients added yet!</td></tr>`;
         return;
       }
 
@@ -232,11 +232,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <button class="btn btn-sm btn-outline-danger" onclick="removeIngredient('${ing.id}', '${itemId}')">REMOVE</button>
           </td>
         `;
-        recipeTable.appendChild(row);
+        recipeTableBody.appendChild(row);
       });
     } catch (error) {
       console.error(error);
-      recipeTable.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error loading recipe data.</td></tr>`;
+      recipeTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error loading recipe data.</td></tr>`;
     }
   }
 

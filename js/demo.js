@@ -48,16 +48,28 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch(menuItemsEndpoint);
       if (!response.ok) throw new Error("Could not fetch menu items.");
       
-      const items = await response.json();
+      const data = await response.json();
+      const items = Array.isArray(data) ? data : (data.menuItems || []);
       menuTableBody.innerHTML = ""; 
 
-      if (items.length === 0) {
-        menuTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No menu items found. Add one on the left!</td></tr>`;
-        return;
+            // Search 'Filter' Process
+      const menuSearchInput = document.getElementById("menuSearchInput");
+      let searchTerm = menuSearchInput ? menuSearchInput.value.trim() : "";
+      
+      let filteredItems = items;
+      if (searchTerm !== "") {
+        filteredItems = items.filter(item => 
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
       }
 
+      if (filteredItems.length === 0) {
+        menuTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No matching items found.</td></tr>`;
+        return;
+      }
       
-      items.forEach(item => {
+
+      filteredItems.forEach(item => {
         const displayImage = item.image ? item.image : "https://unsplash.com";
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -170,6 +182,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadMenuItems();
 
+  // Search Function
+  const menuSearchForm = document.getElementById("menuSearchForm");
+  const menuSearchInput = document.getElementById("menuSearchInput");
+
+  if (menuSearchForm && menuSearchInput) {
+    // Triggers search filtering when user hits enter 
+    menuSearchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      loadMenuItems();
+    });
+
+    // Real-time responsive filter action
+    menuSearchInput.addEventListener("input", () => {
+      loadMenuItems();
+    });
+  }
 
   // RECIPE & INGREDIENT MANAGEMENT 
   const activeText = document.getElementById("activeRecipeDishName");
@@ -290,8 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadMenuItems();
 });
 
-
-
+  
  // INVENTORY 
   const inventoryForm = document.getElementById("inventoryForm");
   const inventoryTableBody = document.getElementById("inventoryTableBody");

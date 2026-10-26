@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // MENU ITEM DATABASE 
   const menuItemForm = document.getElementById("menuItemForm");
-  const menuTable = document.getElementById("menuTable");
+  const menuTableBody = document.getElementById("menuTableBody");
   const menuFeedback = document.getElementById("menuFeedback");
   
   const menuItemsEndpoint = "https://dnngesa.github.io/ReciTrak/db.json";
@@ -41,22 +41,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to Load Items
   async function loadMenuItems() {
+
+    if (!menuTableBody) return;
+
     try {
       const response = await fetch(menuItemsEndpoint);
       if (!response.ok) throw new Error("Could not fetch menu items.");
       
       const items = await response.json();
-      menuTable.innerHTML = ""; 
+      menuTableBody.innerHTML = ""; 
 
       if (items.length === 0) {
-        menuTable.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">No menu items found. Add one on the left!</td></tr>`;
+        menuTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No menu items found. Add one on the left!</td></tr>`;
         return;
       }
 
       
       items.forEach(item => {
+        const displayImage = item.image ? item.image : "https://unsplash.com";
         const row = document.createElement("tr");
         row.innerHTML = `
+          <td>
+           <img src="${displayImage}" alt="${item.name}" class="rounded-circle shadow-sm border border-2 border-white" style="width: 45px; height: 45px; object-fit: cover;">
+          </td>
           <td class="fw-bold dish-name-target">${item.name}</td>
           <td>KES ${parseFloat(item.price).toFixed(2)}</td>
           <td class="text-end">
@@ -72,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     } catch (error) {
       console.error("Fetch Error:", error);
-      menuTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error loading database.</td></tr>`;
+      menuTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Error loading database.</td></tr>`;
     }
   }
 
@@ -139,10 +146,29 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Add Photo 
-  window.actionPhoto = function(id, name) {
-  alert(`Uploading "${name}" (ID: ${id}) photo!`);
-};
+   window.actionPhoto = async function(id, name) {
+    const imageUrl = prompt(`Paste an Image URL link from the web for "${name}":`);
+    if (imageUrl === null || imageUrl.trim() === "") return;
 
+    try {
+      const response = await fetch(`${menuItemsEndpoint}/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: imageUrl.trim() })
+      });
+
+      if (response.ok) {
+        loadMenuItems(); 
+      } else {
+        throw new Error("Failed to upload photo link to local database.");
+      }
+    } catch (error) {
+      console.error("Photo link error:", error);
+      alert("Error linking image to database resource.");
+    }
+  };
+
+  loadMenuItems();
 
 
   // RECIPE & INGREDIENT MANAGEMENT 

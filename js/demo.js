@@ -410,7 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // SUPPLY CHAIN
   const supplyForm = document.getElementById("supplyForm");
-  const supplyTable = document.getElementById("supplyTable");
+  const supplyTable = document.getElementById("supplyTableBody");
   const supplyFeedback = document.getElementById("supplyFeedback");
   const supplyEndpoint = "https://dnngesa.github.io/ReciTrak/db.json";
 
@@ -420,7 +420,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch(supplyEndpoint);
       if (!response.ok) throw new Error("Could not fetch supply chain logs.");
       
-      const orders = await response.json();
+      const data = await response.json();
+      const orders = Array.isArray(data) ? data : (data.supply || []);
       supplyTable.innerHTML = "";
 
       if (orders.length === 0) {
@@ -438,9 +439,9 @@ document.addEventListener("DOMContentLoaded", () => {
         row.innerHTML = `
           <td class="fw-bold text-secondary">${order.vendor}</td>
           <td>${order.itemName}</td>
-          <td>$${cost.toFixed(2)}</td>
+          <td>KES ${cost.toFixed(2)}</td>
           <td>${qty}</td>
-          <td class="fw-bold text-success">$${totalOrderValue.toFixed(2)}</td>
+          <td class="fw-bold text-success">KES ${totalOrderValue.toFixed(2)}</td>
           <td class="text-end">
             <button class="btn btn-sm btn-outline-danger" onclick="cancelProcurementOrder('${order.id}')">DELETE</button>
           </td>

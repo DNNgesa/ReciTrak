@@ -294,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
  // INVENTORY 
   const inventoryForm = document.getElementById("inventoryForm");
-  const inventoryTable = document.getElementById("inventoryTable");
+  const inventoryTableBody = document.getElementById("inventoryTableBody");
   const inventoryFeedback = document.getElementById("inventoryFeedback");
   const inventoryEndpoint = "https://dnngesa.github.io/ReciTrak/db.json";
 
@@ -304,11 +304,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch(inventoryEndpoint);
       if (!response.ok) throw new Error("Could not retrieve inventory.");
       
-      const stockItems = await response.json();
-      inventoryTable.innerHTML = ""; 
+      const data = await response.json();
+      const stockItems = Array.isArray(data) ? data : (data.inventory || []);
+      inventoryTableBody.innerHTML = ""; 
 
       if (stockItems.length === 0) {
-        inventoryTable.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No inventory tracked yet!</td></tr>`;
+        inventoryTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No inventory tracked yet!</td></tr>`;
         return;
       }
 
@@ -335,11 +336,11 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </td>
         `;
-        inventoryTable.appendChild(row);
+        inventoryTableBody.appendChild(row);
       });
     } catch (error) {
       console.error("Inventory Fetch Error:", error);
-      inventoryTable.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Error loading inventory ledger logs.</td></tr>`;
+      inventoryTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Error loading inventory ledger logs.</td></tr>`;
     }
   }
 

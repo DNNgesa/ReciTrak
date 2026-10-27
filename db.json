@@ -21,22 +21,100 @@
       "price": 700,
       "id": 2,
       "image": "https://www.thedeliciouscrescent.com/wp-content/uploads/2023/07/Fish-Curry-3.jpg"
+    },
+    {
+      "name": "Chicken Pilau",
+      "price": 550,
+      "id": 3,
+      "image": "https://chaiandchurros.com/wp-content/uploads/2024/09/ChickenYakhniPulaoPic-683x1024.jpeg"
+    },
+    {
+      "name": "Chicken Curry",
+      "price": 500,
+      "id": 4,
+      "image": "https://www.sandravalvassori.com/wp-content/uploads/2026/01/Coconut-Chicken-Curry-2454.jpg"
+    },
+    {
+      "name": "Beef Curry",
+      "price": 500,
+      "id": 5,
+      "image": "https://kaynutrition.com/wp-content/uploads/2024/03/slow-cooker-beef-curry-1.jpg"
+    },
+    {
+      "name": "Chicken Biryani",
+      "price": 650,
+      "id": 6,
+      "image": "https://www.cookwithkushi.com/wp-content/uploads/2015/11/spicy_simple_chicken_biryani.jpg"
+    },
+    {
+      "name": "Beef Biryani",
+      "price": 550,
+      "id": 7,
+      "image": "https://onestophalal.com/cdn/shop/articles/beef_biryani-1692140447453_1200x.jpg?v=1692147590"
+    },
+    {
+      "name": "Butter Chicken",
+      "price": 750,
+      "id": 8,
+      "image": "https://dishedbykate.com/wp-content/uploads/2024/10/Butter-chicken.jpg"
     }
   ],
   "recipes": [
-    {
-      "menuItemId": "2",
-      "name": "fish",
-      "quantity": 500,
-      "unit": "Grams",
-      "id": 4
-    },
     {
       "menuItemId": "1",
       "name": "Beef Steak",
       "quantity": 500,
       "unit": "Grams",
       "id": 5
+    },
+    {
+      "menuItemId": "2",
+      "name": "Whole Tilapia",
+      "quantity": 1,
+      "unit": "Small",
+      "id": 6
+    },
+    {
+      "menuItemId": "8",
+      "name": "Boneless Chicken Thigh",
+      "quantity": 200,
+      "unit": "Grams",
+      "id": 7
+    },
+    {
+      "menuItemId": "6",
+      "name": "Chicken Leg Quarter",
+      "quantity": 300,
+      "unit": "Grams",
+      "id": 8
+    },
+    {
+      "menuItemId": "3",
+      "name": "Chicken Leg Quarter",
+      "quantity": 300,
+      "unit": "Grams",
+      "id": 9
+    },
+    {
+      "menuItemId": "4",
+      "name": "Chicken Leg Quarter",
+      "quantity": 300,
+      "unit": "Grams",
+      "id": 10
+    },
+    {
+      "menuItemId": "5",
+      "name": "Boneless Beef Steak",
+      "quantity": 200,
+      "unit": "Grams",
+      "id": 11
+    },
+    {
+      "menuItemId": "7",
+      "name": "Boneless Beef Steak",
+      "quantity": 200,
+      "unit": "Grams",
+      "id": 12
     }
   ],
   "inventory": [
@@ -48,13 +126,14 @@
       "id": 1
     }
   ],
-  "supply": [
+  "vendors": [
     {
-      "vendor": "Morendat Premium Beef",
-      "itemName": "Beef",
-      "unitCost": 1000,
-      "quantity": 100,
-      "id": 3
+      "vendorName": "Morendat Beef",
+      "itemName": "Wagyu Beef Steak",
+      "packSize": "1Kg",
+      "unitCost": 2000,
+      "id": 1
     }
-  ]
+  ],
+  "supply": []
 }

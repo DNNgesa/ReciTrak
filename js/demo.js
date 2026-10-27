@@ -39,6 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuItemsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
   const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
 
+  // const menuItemsEndpoint = "http://localhost:3000/menuItems";
+  // const recipeEndpoint = "http://localhost:3000/recipes";
+
   // Function to Load Items
   async function loadMenuItems() {
 
@@ -325,6 +328,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const inventoryFeedback = document.getElementById("inventoryFeedback");
   const inventoryEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
 
+  // const inventoryEndpoint = "http://localhost:3000/inventory";
+
   // Fetch inventory 
   async function loadInventoryItems() {
     try {
@@ -435,11 +440,138 @@ document.addEventListener("DOMContentLoaded", () => {
   loadInventoryItems();
 
 
+  // VENDOR DIRECTORY 
+  const vendorCatalogForm = document.getElementById("vendorCatalogForm");
+  const vendorTableBody = document.getElementById("vendorTableBody");
+  const vendorFeedback = document.getElementById("vendorFeedback");
+  const vendorsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  // const vendorsEndpoint = "http://localhost:3000/vendors";
+
+  async function loadVendorDirectory() {
+    if (!vendorTableBody) return;
+
+    try {
+      const response = await fetch(vendorsEndpoint);
+      if (!response.ok) throw new Error("Could not retrieve vendor listings.");
+      
+      const vendors = await response.json();
+      vendorTableBody.innerHTML = "";
+
+      if (vendors.length === 0) {
+        vendorTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">No vendors registered yet. Log your first supplier on the left!</td></tr>`;
+        return;
+      }
+
+      vendors.forEach(vnd => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+        <td class="fw-bold text-secondary">${vnd.vendorName}</td>
+        <td>${vnd.itemName}</td>
+        <td><span class="badge bg-light text-dark border">${vnd.packSize}</span></td>
+        <td class="fw-semibold">KES ${parseFloat(vnd.unitCost).toFixed(2)}</td>
+        <td class="text-end">
+        <div class="btn-group btn-group-sm">
+        <button class="btn btn-outline-primary" onclick="editVendorCatalogItem('${vnd.id}', '${vnd.vendorName}', '${vnd.itemName}', '${vnd.packSize}', ${vnd.unitCost})">Adjust</button>
+        <button class="btn btn-outline-danger" onclick="removeVendorEntry('${vnd.id}')">Remove</button>
+        </div>
+        </td>
+        `;
+
+        vendorTableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error(error);
+      vendorTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Error loading vendor systems database.</td></tr>`;
+    }
+  }
+
+  // Catalog Form Submission 
+  if (vendorCatalogForm) {
+    vendorCatalogForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const newVendorItem = {
+        vendorName: document.getElementById("vndCompanyName").value,
+        itemName: document.getElementById("vndItemSupplied").value,
+        packSize: document.getElementById("vndPackSize").value,
+        unitCost: parseFloat(document.getElementById("vndUnitCost").value)
+      };
+
+      try {
+        const response = await fetch(vendorsEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newVendorItem)
+        });
+
+        if (response.ok) {
+          vendorFeedback.className = "mt-2 small text-success fw-bold";
+          vendorFeedback.textContent = "Vendor catalog item registered successfully!";
+          vendorCatalogForm.reset();
+          loadVendorDirectory();
+        }
+      } catch (error) {
+        console.error("Vendor Database Error:", error);
+      }
+    });
+  }
+
+  // Adjust Vendor Array 
+  window.editVendorCatalogItem = async function(id, vendorName, itemName, currentPackSize, currentUnitCost) {
+    const newVendorName = prompt(`Enter Vendor/Company Name for "${itemName}":`, vendorName);
+if (newVendorName === null || newVendorName.trim() === "") return;
+    
+    const newPackSize = prompt(`Enter new pack size/unit for ${vendorName} - ${itemName}:`, currentPackSize);
+    if (newPackSize === null || newPackSize.trim() === "") return;
+
+    const newCostInput = prompt(`Enter new contract unit cost in KES for ${newVendorName.trim()} - ${itemName}:`, currentUnitCost);
+    if (newCostInput === null || newCostInput.trim() === "" || isNaN(newCostInput)) return; 
+
+    const updatedData = {
+      vendorName: newVendorName.trim(),
+      packSize: newPackSize.trim(),
+      unitCost: parseFloat(newCostInput)
+    };
+
+    try {
+      const response = await fetch(`${vendorsEndpoint}/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData)
+      });
+
+      if (response.ok) {
+        loadVendorDirectory();
+      } else {
+        throw new Error("Local database server rejected package price update request.");
+      }
+    } catch (error) {
+      console.error("Vendor Catalog Update Error:", error);
+    }
+  };
+
+  // Remove vendor data 
+  window.removeVendorEntry = async function(id) {
+    if (confirm("Permanently drop this item record from vendor contracts directory?")) {
+      try {
+        const response = await fetch(`${vendorsEndpoint}/${id}`, { method: "DELETE" });
+        if (response.ok) loadVendorDirectory();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  loadVendorDirectory();
+
+
   // SUPPLY CHAIN
   const supplyForm = document.getElementById("supplyForm");
   const supplyTable = document.getElementById("supplyTableBody");
   const supplyFeedback = document.getElementById("supplyFeedback");
   const supplyEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+   
+  // const supplyEndpoint = "http://localhost:3000/supply";
 
   // Function to pull procurement orders 
   async function loadSupplyOrders() {

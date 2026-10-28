@@ -57,6 +57,13 @@
       "price": 750,
       "id": 8,
       "image": "https://dishedbykate.com/wp-content/uploads/2024/10/Butter-chicken.jpg"
+    },
+    {
+      "name": "Chapati",
+      "price": 20,
+      "id": 9,
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiQzrVJGuGnCCHP687D_pEQ49eXDO6u76ueDSSXB27N3YySnJnONCjeNY&s=10",
+      "recipeYield": 8
     }
   ],
   "recipes": [
@@ -115,6 +122,48 @@
       "quantity": 200,
       "unit": "Grams",
       "id": 12
+    },
+    {
+      "menuItemId": "9",
+      "name": "Flour",
+      "quantity": 1000,
+      "unit": "Grams",
+      "servingsYield": 8,
+      "id": 13,
+      "brand": "Ajab"
+    },
+    {
+      "menuItemId": "9",
+      "name": "Salt",
+      "brand": "Kensalt",
+      "quantity": 6,
+      "unit": "Grams",
+      "servingsYield": 8,
+      "id": 14
+    },
+    {
+      "menuItemId": "9",
+      "name": "Sugar",
+      "brand": "Kabras",
+      "quantity": 7,
+      "unit": "Grams",
+      "id": 15
+    },
+    {
+      "menuItemId": "9",
+      "name": "Water",
+      "brand": "Any",
+      "quantity": 270,
+      "unit": "Ml",
+      "id": 16
+    },
+    {
+      "menuItemId": "9",
+      "name": "Vegetable Oil",
+      "brand": "Rina",
+      "quantity": 30,
+      "unit": "Ml",
+      "id": 17
     }
   ],
   "inventory": [
@@ -124,15 +173,46 @@
       "unit": "Kilograms",
       "minThreshold": 2,
       "id": 1
+    },
+    {
+      "name": "Flour",
+      "quantity": 2,
+      "unit": "Kilograms",
+      "minThreshold": 1,
+      "id": 2
+    },
+    {
+      "name": "Vegetable Oil",
+      "quantity": 5,
+      "unit": "Litres",
+      "minThreshold": 1,
+      "id": 3
     }
   ],
   "vendors": [
     {
       "vendorName": "Morendat Beef",
       "itemName": "Wagyu Beef Steak",
-      "packSize": "1Kg",
-      "unitCost": 2000,
+      "packQuantity": 1,
+      "measurementUnit": "kg",
+      "unitCost": 2500,
       "id": 1
+    },
+    {
+      "vendorName": "Carrefour",
+      "itemName": "Flour",
+      "packQuantity": 2000,
+      "measurementUnit": "grams",
+      "unitCost": 185,
+      "id": 2
+    },
+    {
+      "vendorName": "Carrefour",
+      "itemName": "Sugar",
+      "packQuantity": 2,
+      "measurementUnit": "kg",
+      "unitCost": 289,
+      "id": 3
     }
   ],
   "supply": []

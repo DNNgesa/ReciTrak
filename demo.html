@@ -96,56 +96,77 @@
     
     <!-- RECIPES SECTION -->
      <section id="recipes" class="app-page" style="display: none;">
-        <div class="card p-4 shadow-sm mb-4 bg-light border-success">
-            <h2 class="mb-1">Recipe Configuration</h2>
-            <p class="text-muted mb-0">Currently configuring recipe for: <span id="activeRecipeDishName" class="fw-bold text-success">No dish selected. Select a dish from Menu Items!</span></p>
+    <div class="card p-4 shadow-sm mb-4 bg-light border-success">
+    <h2 class="mb-1">Recipe Configuration</h2>
+    <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <p class="text-muted mb-0 me-3">
+            Currently configuring recipe for: 
+            <span id="activeRecipeDishName" class="fw-bold text-success">No dish selected. Select a dish from Menu Items!</span>
+            <span id="activeRecipeYieldDisplay" class="ms-2 fw-bold text-secondary"></span>
+        </p>
+        <!-- MASTER PORTION CONFIGURE ROW -->
+        <div id="recipeYieldConfigBlock" class="d-flex align-items-center mt-2 mt-md-0" style="display: none !important;">
+            <label for="recipeServingsMaster" class="me-2 small fw-semibold text-muted text-nowrap">Batch Yield:</label>
+            <input type="number" class="form-control form-control-sm me-2" id="recipeServingsMaster" min="1" value="1" style="max-width: 80px;">
+            <button class="btn btn-sm btn-success text-nowrap" onclick="updateActiveRecipeYield()">Save Yield</button>
+        </div>
+    </div>
+</div>
+
+    
+    <div class="row">
+        <!-- RECIPE BUILDER FORM -->
+         <div class="col-md-5 mb-4">
+            <div class="card p-3 shadow-sm">
+                <h4>Add Ingredients</h4>
+                <form id="recipeIngredientForm">
+    <input type="hidden" id="activeRecipeItemId">
+    <div class="mb-3">
+        <label for="ingredientName" class="form-label">Ingredient Name</label>
+        <input type="text" class="form-control" id="ingredientName" required placeholder="e.g., Mutton Steak">
+    </div>
+    <div class="mb-3">
+        <label for="ingredientBrand" class="form-label">Brand Name</label>
+        <input type="text" class="form-control" id="ingredientBrand" required placeholder="e.g., Exe, Sirimon, Generic">
+    </div>
+    <div class="mb-3">
+        <label for="ingredientQty" class="form-label">Quantity Required</label>
+        <div class="input-group">
+            <input type="number" step="0.01" class="form-control" id="ingredientQty" required placeholder="e.g., 200">
+            <input type="text" class="form-control" id="ingredientUnit" required placeholder="e.g., grams, pcs" style="max-width: 100px;">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success w-100">Add to Recipe Build</button>
+</form>
+
+            </div>
         </div>
         
-        <div class="row">
-            <!-- RECIPE BUILDER FORM -->
-             <div class="col-md-5 mb-4">
-                <div class="card p-3 shadow-sm">
-                    <h4>Add Ingredients</h4>
-                    <form id="recipeIngredientForm">
-                        <input type="hidden" id="activeRecipeItemId">
-                        <div class="mb-3">
-                            <label for="ingredientName" class="form-label">Ingredient Name</label>
-                            <input type="text" class="form-control" id="ingredientName" required placeholder="e.g., Mutton Steak">
-                        </div>
-                        <div class="mb-3">
-                            <label for="ingredientQty" class="form-label">Quantity Required</label>
-                            <div class="input-group">
-                                <input type="number" step="0.01" class="form-control" id="ingredientQty" required placeholder="e.g., 200">
-                                <input type="text" class="form-control" id="ingredientUnit" required placeholder="e.g., grams, pcs" style="max-width: 100px;">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Add to Recipe Build</button>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- RECIPE LIST -->
-             <div class="col-md-7">
-                <div class="card p-3 shadow-sm">
-                    <h4>Recipe Build Blueprint</h4>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-striped align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Ingredient</th>
-                                    <th>Quantity</th>
-                                    <th class="text-end">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recipeTableBody">
-                                <tr><td colspan="3" class="text-center text-muted py-3">Select a dish from the Menu to manage its ingredients.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <!-- RECIPE LIST -->
+         <div class="col-md-7">
+            <div class="card p-3 shadow-sm">
+                <h4>Recipe Build Blueprint</h4>
+                <!-- UPDATED BLUEPRINT TABLE FOR FINANCIAL METRICS -->
+<div class="table-responsive">
+    <table class="table table-sm table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Ingredient / Brand</th>
+                <th>Quantity</th>
+                <th>Calculated Cost</th> <!-- Added for automated financial analytics column -->
+                <th class="text-end">Action</th>
+            </tr>
+        </thead>
+        <tbody id="recipeTableBody">
+            <tr><td colspan="4" class="text-center text-muted py-3">Select a dish from the Menu to manage its ingredients.</td></tr>
+        </tbody>
+    </table>
+</div>
+
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <!-- INVENTORY SECTION -->
 <section id="inventory" class="app-page" style="display: none;">
@@ -217,8 +238,20 @@
                     </div>
                     <div class="row">
                         <div class="col-6 mb-3">
-                            <label for="vndPackSize" class="form-label">Pack Size / Unit</label>
-                            <input type="text" class="form-control" id="vndPackSize" required placeholder="e.g., 10kg Box, 24-Pack">
+                            <label for="vndPackQuantity" class="form-label">Pack Qty / Volume</label>
+                            <input type="number" step="0.01" class="form-control" id="vndPackQuantity" required placeholder="e.g., 10, 500, 24">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="vndMeasurementUnit" class="form-label">Measurement Unit</label>
+                            <select class="form-select" id="vndMeasurementUnit" required>
+                                <option value="" disabled selected>Select unit</option>
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="g">Grams (g)</option>
+                                <option value="L">Litres (L)</option>
+                                <option value="ml">Millilitres (ml)</option>
+                                <option value="pcs">Pieces (pcs)</option>
+                                <option value="pack">Packs</option>
+                            </select>
                         </div>
                         <div class="col-6 mb-3">
                             <label for="vndUnitCost" class="form-label">Unit Cost (KES)</label>
@@ -243,6 +276,7 @@
                                 <th>Resource Item</th>
                                 <th>Pack Size</th>
                                 <th>Cost</th>
+                                <th>Cost / Unit</th>
                                 <th class="text-end">Actions</th>
                             </tr>
                         </thead>

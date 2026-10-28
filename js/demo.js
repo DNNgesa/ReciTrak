@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuTableBody = document.getElementById("menuTableBody");
   const menuFeedback = document.getElementById("menuFeedback");
   
-  const menuItemsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-  const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+const menuItemsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
 
   // const menuItemsEndpoint = "http://localhost:3000/menuItems";
   // const recipeEndpoint = "http://localhost:3000/recipes";
@@ -208,85 +208,187 @@ document.addEventListener("DOMContentLoaded", () => {
   const recipeIngredientForm = document.getElementById("recipeIngredientForm");
   const recipeTableBody = document.getElementById("recipeTableBody");
 
-  window.actionRecipe = function(id) {
-    const tableRows = menuTableBody.querySelectorAll("tr");
-    let targetDishName = "Unknown Item";
+  window.actionRecipe = async function(id) {
+    if (!activeText || !activeHiddenId) return;
+
+    activeHiddenId.value = id;
     
-    tableRows.forEach(row => {
-      if (row.innerHTML.includes(`onclick="actionRecipe('${id}')"`)) {
-        targetDishName = row.querySelector(".dish-name-target").innerText;
-      }
-    });
+    const yieldDisplay = document.getElementById("activeRecipeYieldDisplay");
+    const yieldBlock = document.getElementById("recipeYieldConfigBlock");
+    const masterYieldInput = document.getElementById("recipeServingsMaster");
 
-    if (activeText && activeHiddenId) {
-      activeText.textContent = targetDishName;
-      activeHiddenId.value = id;
+    try {
+      const response = await fetch(`${menuItemsEndpoint}/${id}`);
+      if (!response.ok) throw new Error("Could not find dish properties.");
+      const currentDish = await response.json();
+
+      activeText.textContent = currentDish.name;
+
+      const masterYieldValue = currentDish.recipeYield || 1;
+      if (yieldDisplay && yieldBlock && masterYieldInput) {
+        yieldDisplay.textContent = `(Yield: ${masterYieldValue} Portions)`;
+        masterYieldInput.value = masterYieldValue;
+        yieldBlock.style.setProperty("display", "flex", "important"); 
+      }
+
+      // Load matching formula ingredients
+      loadRecipeIngredients(id);
+
+      pages.forEach(page => page.style.display = page.id === "recipes" ? "block" : "none");
+      navLinks.forEach(item => {
+        if (item.getAttribute("data-target") === "recipes") item.classList.add("active");
+        else item.classList.remove("active");
+      });
+
+    } catch (error) {
+      console.error("Action Recipe Error:", error);
+      activeText.textContent = "Error loading dish target.";
     }
-
-    // Load any existing ingredients 
-    loadRecipeIngredients(id);
-
-    // Page routing transition
-    pages.forEach(page => {
-      page.style.display = page.id === "recipes" ? "block" : "none";
-    });
-
-    navLinks.forEach(item => {
-      if (item.getAttribute("data-target") === "recipes") {
-        item.classList.add("active");
-      } else {
-        item.classList.remove("active");
-      }
-    });
   };
 
-  // Load ingredients from recipes matching the menuItemId
+  window.updateActiveRecipeYield = async function() {
+    const currentItemId = activeHiddenId.value;
+    if (!currentItemId) return;
+
+    const masterYieldInput = document.getElementById("recipeServingsMaster");
+    const yieldDisplay = document.getElementById("activeRecipeYieldDisplay");
+    const newYield = parseInt(masterYieldInput.value) || 1;
+
+    try {
+      const response = await fetch(`${menuItemsEndpoint}/${currentItemId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipeYield: newYield })
+      });
+
+      if (response.ok) {
+        if (yieldDisplay) yieldDisplay.textContent = `(Yield: ${newYield} Portions)`;
+        alert("Recipe batch yield configured successfully!");
+      }
+    } catch (error) {
+      console.error("Yield Save Error:", error);
+    }
+  };
+
+  // Food Cost Calculation Engine 
   async function loadRecipeIngredients(itemId) {
     try {
-      const response = await fetch(`${recipeEndpoint}?menuItemId=${itemId}`);
-      if (!response.ok) throw new Error("Could not fetch ingredients.");
+      // Fetch both ingredients and vendor price lists 
+      const [ingredientsRes, vendorsRes, menuRes] = await Promise.all([
+        fetch(`${recipeEndpoint}?menuItemId=${itemId}`),
+        // fetch("http://localhost:3000/vendors"),
+        fetch("https://DNNgesa.github.io/ReciTrak/db.json"),
+        fetch(`${menuItemsEndpoint}/${itemId}`)
+      ]);
+
+      if (!ingredientsRes.ok || !vendorsRes.ok || !menuRes.ok) throw new Error("Database fetch error.");
       
-      const ingredients = await response.json();
+      const ingredients = await ingredientsRes.json();
+      const vendors = await vendorsRes.json();
+      const currentDish = await menuRes.json();
+
       recipeTableBody.innerHTML = "";
 
       if (ingredients.length === 0) {
-        recipeTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">No ingredients added yet!</td></tr>`;
+        recipeTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No ingredients added yet!</td></tr>`;
         return;
       }
 
+      let totalRecipeCost = 0;
+
       ingredients.forEach(ing => {
+        const displayBrand = ing.brand ? ing.brand : "Generic";
+        let itemizedCost = 0;
+        let costLabel = `<span class="text-muted small">No vendor contract match</span>`;
+
+          const matchedVendorContract = vendors.find(vnd => {
+          const contractItem = (vnd.itemName || "").toLowerCase().trim();
+          const contractVendor = (vnd.vendorName || "").toLowerCase().trim();
+          
+          const recipeItem = (ing.name || "").toLowerCase().trim();
+          const recipeBrand = (displayBrand || "").toLowerCase().trim();
+
+          // Returns true if names overlap 
+          const itemsMatch = contractItem.includes(recipeItem) || recipeItem.includes(contractItem);
+          
+          const brandsMatch = recipeBrand === "generic" || contractVendor.includes(recipeBrand) || recipeBrand.includes(contractVendor);
+
+          return itemsMatch && brandsMatch;
+        });
+
+
+
+        if (matchedVendorContract) {
+          const packQty = parseFloat(matchedVendorContract.packQuantity) || 1;
+          const contractCost = parseFloat(matchedVendorContract.unitCost) || 0;
+          
+          // Cost per single base unit 
+          const costPerUnit = contractCost / packQty;
+          
+          // Total cost for this recipe's required quantity amount
+          itemizedCost = costPerUnit * parseFloat(ing.quantity);
+          totalRecipeCost += itemizedCost;
+          
+          costLabel = `<span class="fw-semibold text-dark">KES ${itemizedCost.toFixed(2)}</span>`;
+        }
+
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${ing.name}</td>
-          <td><span class="badge bg-success">${ing.quantity} ${ing.unit}</span></td>
+          <td>
+            <div class="fw-bold text-dark">${ing.name}</div>
+            <div class="text-muted small">Brand: ${displayBrand}</div>
+          </td>
+          <td><span class="badge bg-light text-dark border">${ing.quantity} ${ing.unit}</span></td>
+          <td>${costLabel}</td>
           <td class="text-end">
-            <button class="btn btn-sm btn-outline-danger" onclick="removeIngredient('${ing.id}', '${itemId}')">REMOVE</button>
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary" onclick="editRecipeIngredient('${ing.id}', '${ing.menuItemId}', '${ing.name}', '${displayBrand}', ${ing.quantity}, '${ing.unit}')">Adjust</button>
+              <button class="btn btn-sm btn-outline-danger" onclick="removeIngredient('${ing.id}', '${itemId}')">Remove</button>
+            </div>
           </td>
         `;
         recipeTableBody.appendChild(row);
       });
+
+      // Compute Cost per Portion
+      const dishYieldCount = currentDish.recipeYield || 1;
+      const costPerPortion = totalRecipeCost / dishYieldCount;
+
+      const batchCostRow = document.createElement("tr");
+      batchCostRow.className = "table-light border-top border-2";
+      batchCostRow.innerHTML = `
+        <td colspan="2" class="fw-bold text-end">Total Batch Cost:</td>
+        <td colspan="2" class="fw-bold text-dark">KES ${totalRecipeCost.toFixed(2)}</td>
+      `;
+      recipeTableBody.appendChild(batchCostRow);
+
+      const portionCostRow = document.createElement("tr");
+      portionCostRow.className = "table-success border-top";
+      portionCostRow.innerHTML = `
+        <td colspan="2" class="fw-bold text-end">Plate Cost per Serving:</td>
+        <td colspan="2" class="fw-bold text-success">KES ${costPerPortion.toFixed(2)}</td>
+      `;
+      recipeTableBody.appendChild(portionCostRow);
+
     } catch (error) {
-      console.error(error);
-      recipeTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Error loading recipe data.</td></tr>`;
+      console.error("Food Cost Engine Mismatch Error:", error);
+      recipeTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Error running linked food cost calculations ledger.</td></tr>`;
     }
   }
 
-  // Ingredients form submissions 
   if (recipeIngredientForm) {
     recipeIngredientForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const currentItemId = activeHiddenId.value;
-      if (!currentItemId) {
-        alert("Please select a dish from Menu Items first!");
-        return;
-      }
+      if (!currentItemId) return;
 
       const newIngredient = {
         menuItemId: currentItemId, 
-        name: document.getElementById("ingredientName").value,
+        name: document.getElementById("ingredientName").value.trim(),
+        brand: document.getElementById("ingredientBrand").value.trim(),
         quantity: parseFloat(document.getElementById("ingredientQty").value),
-        unit: document.getElementById("ingredientUnit").value
+        unit: document.getElementById("ingredientUnit").value.trim()
       };
 
       try {
@@ -297,7 +399,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (response.ok) {
-          recipeIngredientForm.reset();
+          document.getElementById("ingredientName").value = "";
+          document.getElementById("ingredientBrand").value = "";
+          document.getElementById("ingredientQty").value = "";
+          document.getElementById("ingredientUnit").value = "";
           loadRecipeIngredients(currentItemId); 
         }
       } catch (error) {
@@ -306,19 +411,57 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Remove individual ingredients
+  // Adjust/Edit Individual Recipe Ingredient 
+  window.editRecipeIngredient = async function(id, menuItemId, name, currentBrand, currentQuantity, currentUnit) {
+    
+    const newIngredientName = prompt(`Enter Ingredient Name:`, name);
+    if (newIngredientName === null || newIngredientName.trim() === "") return;
+
+    const newBrandName = prompt(`Enter Brand Name for "${newIngredientName.trim()}":`, currentBrand);
+    if (newBrandName === null || newBrandName.trim() === "") return;
+
+    const newQuantityInput = prompt(`Enter quantity required for ${newIngredientName.trim()} (${currentUnit}):`, currentQuantity);
+    if (newQuantityInput === null || newQuantityInput.trim() === "" || isNaN(newQuantityInput)) return;
+
+    const newUnitInput = prompt(`Enter measurement unit (e.g., g, ml, pcs):`, currentUnit);
+    if (newUnitInput === null || newUnitInput.trim() === "") return;
+
+    const updatedIngredientData = {
+      name: newIngredientName.trim(),
+      brand: newBrandName.trim(),
+      quantity: parseFloat(newQuantityInput),
+      unit: newUnitInput.trim()
+    };
+
+    try {
+      const response = await fetch(`${recipeEndpoint}/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedIngredientData)
+      });
+
+      if (response.ok) {
+        loadRecipeIngredients(menuItemId); 
+      } else {
+        throw new Error("Local database server rejected ingredient adjustment request.");
+      }
+    } catch (error) {
+      console.error("Recipe Ingredient Update Error:", error);
+    }
+  };
+
+
   window.removeIngredient = async function(id, itemId) {
     try {
       const response = await fetch(`${recipeEndpoint}/${id}`, { method: "DELETE" });
-      if (response.ok) {
-        loadRecipeIngredients(itemId);
-      }
+      if (response.ok) loadRecipeIngredients(itemId);
     } catch (error) {
       console.error(error);
     }
   };
 
   loadMenuItems();
+
 });
 
   
@@ -327,7 +470,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const inventoryTableBody = document.getElementById("inventoryTableBody");
   const inventoryFeedback = document.getElementById("inventoryFeedback");
   const inventoryEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-
   // const inventoryEndpoint = "http://localhost:3000/inventory";
 
   // Fetch inventory 
@@ -458,30 +600,36 @@ document.addEventListener("DOMContentLoaded", () => {
       vendorTableBody.innerHTML = "";
 
       if (vendors.length === 0) {
-        vendorTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">No vendors registered yet. Log your first supplier on the left!</td></tr>`;
+        vendorTableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">No vendors registered yet. Log your first supplier on the left!</td></tr>`;
         return;
       }
 
       vendors.forEach(vnd => {
+        const packQty = parseFloat(vnd.packQuantity) || parseFloat(vnd.packSize) || 1;
+        const measureUnit = vnd.measurementUnit || "Unit";
+        const cost = parseFloat(vnd.unitCost) || 0;
+        const costPerBaseUnit = cost / packQty;
+
         const row = document.createElement("tr");
         row.innerHTML = `
-        <td class="fw-bold text-secondary">${vnd.vendorName}</td>
-        <td>${vnd.itemName}</td>
-        <td><span class="badge bg-light text-dark border">${vnd.packSize}</span></td>
-        <td class="fw-semibold">KES ${parseFloat(vnd.unitCost).toFixed(2)}</td>
-        <td class="text-end">
-        <div class="btn-group btn-group-sm">
-        <button class="btn btn-outline-primary" onclick="editVendorCatalogItem('${vnd.id}', '${vnd.vendorName}', '${vnd.itemName}', '${vnd.packSize}', ${vnd.unitCost})">Adjust</button>
-        <button class="btn btn-outline-danger" onclick="removeVendorEntry('${vnd.id}')">Remove</button>
-        </div>
-        </td>
+          <td class="fw-bold text-secondary">${vnd.vendorName}</td>
+          <td>${vnd.itemName}</td>
+          <td><span class="badge bg-light text-dark border">${packQty} ${measureUnit}</span></td>
+          <td class="fw-semibold">KES ${cost.toFixed(2)}</td>
+          <td class="text-muted small">KES ${costPerBaseUnit.toFixed(2)} / ${measureUnit}</td>
+          <td class="text-end">
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary" onclick="editVendorCatalogItem('${vnd.id}', '${vnd.vendorName}', '${vnd.itemName}', ${packQty}, '${measureUnit}', ${cost})">Adjust</button>
+              <button class="btn btn-outline-danger" onclick="removeVendorEntry('${vnd.id}')">Remove</button>
+            </div>
+          </td>
         `;
 
         vendorTableBody.appendChild(row);
       });
     } catch (error) {
       console.error(error);
-      vendorTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Error loading vendor systems database.</td></tr>`;
+      vendorTableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Error loading vendor systems database.</td></tr>`;
     }
   }
 
@@ -489,11 +637,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (vendorCatalogForm) {
     vendorCatalogForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-
+      
       const newVendorItem = {
         vendorName: document.getElementById("vndCompanyName").value,
         itemName: document.getElementById("vndItemSupplied").value,
-        packSize: document.getElementById("vndPackSize").value,
+        packQuantity: parseFloat(document.getElementById("vndPackQuantity").value),
+        measurementUnit: document.getElementById("vndMeasurementUnit").value,      
         unitCost: parseFloat(document.getElementById("vndUnitCost").value)
       };
 
@@ -516,20 +665,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Adjust Vendor Array 
-  window.editVendorCatalogItem = async function(id, vendorName, itemName, currentPackSize, currentUnitCost) {
+  window.editVendorCatalogItem = async function(id, vendorName, itemName, currentPackQuantity, currentMeasurementUnit, currentUnitCost) {
     const newVendorName = prompt(`Enter Vendor/Company Name for "${itemName}":`, vendorName);
-if (newVendorName === null || newVendorName.trim() === "") return;
-    
-    const newPackSize = prompt(`Enter new pack size/unit for ${vendorName} - ${itemName}:`, currentPackSize);
-    if (newPackSize === null || newPackSize.trim() === "") return;
+    if (newVendorName === null || newVendorName.trim() === "") return;
 
-    const newCostInput = prompt(`Enter new contract unit cost in KES for ${newVendorName.trim()} - ${itemName}:`, currentUnitCost);
-    if (newCostInput === null || newCostInput.trim() === "" || isNaN(newCostInput)) return; 
+    const newPackQtyInput = prompt(`Enter pack volume/quantity size for ${newVendorName.trim()} - ${itemName}:`, currentPackQuantity);
+    if (newPackQtyInput === null || newPackQtyInput.trim() === "" || isNaN(newPackQtyInput)) return;
+
+    const newUnitInput = prompt(`Enter measurement unit (kg, g, L, ml, pcs, pack) for ${newVendorName.trim()} - ${itemName}:`, currentMeasurementUnit);
+    if (newUnitInput === null || newUnitInput.trim() === "") return;
+
+    const newCostInput = prompt(`Enter contract unit cost in KES for ${newVendorName.trim()} - ${itemName}:`, currentUnitCost);
+    if (newCostInput === null || newCostInput.trim() === "" || isNaN(newCostInput)) return;
 
     const updatedData = {
       vendorName: newVendorName.trim(),
-      packSize: newPackSize.trim(),
+      itemName: itemName,
+      packQuantity: parseFloat(newPackQtyInput),
+      measurementUnit: newUnitInput.trim().toLowerCase(),
       unitCost: parseFloat(newCostInput)
     };
 
@@ -541,9 +694,9 @@ if (newVendorName === null || newVendorName.trim() === "") return;
       });
 
       if (response.ok) {
-        loadVendorDirectory();
+        loadVendorDirectory(); 
       } else {
-        throw new Error("Local database server rejected package price update request.");
+        throw new Error("Local database server rejected package layout update request.");
       }
     } catch (error) {
       console.error("Vendor Catalog Update Error:", error);
@@ -563,7 +716,6 @@ if (newVendorName === null || newVendorName.trim() === "") return;
   };
 
   loadVendorDirectory();
-
 
   // SUPPLY CHAIN
   const supplyForm = document.getElementById("supplyForm");

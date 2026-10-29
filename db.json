@@ -63,7 +63,8 @@
       "price": 20,
       "id": 9,
       "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiQzrVJGuGnCCHP687D_pEQ49eXDO6u76ueDSSXB27N3YySnJnONCjeNY&s=10",
-      "recipeYield": 8
+      "recipeYield": 8,
+      "instructions": "1.  Combine the flour, salt, and sugar in a large bowl. Add the water and 30 g of vegetable oil, then stir into a rough dough.\n2. First rest: Turn the dough onto a clean surface, cover it with an inverted bowl, and let it rest for 5 minutes.\n3. Knead: Knead the dough for 2 to 3 minutes until soft and slightly sticky. Place it in a lightly oiled bowl, cover it with a damp towel, and let it rest for 30 minutes to 2 hours.\n4. Shape and laminate: Divide the dough into 6 equal portions (about 80–85 g each) and shape them into balls. Roll one ball out into a thin sheet, brush it with a little oil, and dust it with a pinch of flour. Roll it into a long rope, stretch it gently, and coil it into a snail (spiral) shape. Repeat with the remaining balls and let them rest for 5 minutes.\n5. Roll out: Roll each spiral out into a flat disc about 16–18 cm wide and 3–4 mm thick.\n6. Cook: Heat a heavy-bottomed frying pan or tava over medium-high heat. Cook the chapati until bubbles form and the bottom has light golden spots. Flip, brush the top with a little oil, flip again, and brush the other side. Cook for 1 to 2 minutes, turning and pressing gently until golden brown spots appear all over.\n7. Keep warm: Stack the cooked chapatis and cover them immediately with a clean kitchen towel to keep them soft."
     }
   ],
   "recipes": [
@@ -213,6 +214,22 @@
       "measurementUnit": "grams",
       "unitCost": 289,
       "id": 3
+    },
+    {
+      "vendorName": "Carrefour",
+      "itemName": "Salt",
+      "packQuantity": 2000,
+      "measurementUnit": "g",
+      "unitCost": 84,
+      "id": 4
+    },
+    {
+      "vendorName": "Carrefour",
+      "itemName": "Vegetable Oil",
+      "packQuantity": 10000,
+      "measurementUnit": "ml",
+      "unitCost": 2955,
+      "id": 5
     }
   ],
   "supply": []

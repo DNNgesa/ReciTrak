@@ -35,10 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuItemForm = document.getElementById("menuItemForm");
   const menuTableBody = document.getElementById("menuTableBody");
   const menuFeedback = document.getElementById("menuFeedback");
-  // const menuItemsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-  // const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-  const menuItemsEndpoint = "http://localhost:3000/menuItems";
-  const recipeEndpoint = "http://localhost:3000/recipes";
+  const menuItemsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  // const menuItemsEndpoint = "http://localhost:3000/menuItems";
+  // const recipeEndpoint = "http://localhost:3000/recipes";
 
   // Function to Load Items
   async function loadMenuItems() {
@@ -217,17 +217,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const response = await fetch(`${menuItemsEndpoint}/${id}`);
-      if (!response.ok) throw new Error("Could not find dish properties.");
+      if (!response.ok) throw new Error("Could not find dish.");
       const currentDish = await response.json();
 
       activeText.textContent = currentDish.name;
 
       const masterYieldValue = currentDish.recipeYield || 1;
       if (yieldDisplay && yieldBlock && masterYieldInput) {
-        yieldDisplay.textContent = `(Yield: ${masterYieldValue} Portions)`;
+        yieldDisplay.textContent = `Yield: ${masterYieldValue} Portions`;
         masterYieldInput.value = masterYieldValue;
         yieldBlock.style.setProperty("display", "flex", "important"); 
       }
+
+      const instructionsInput = document.getElementById("recipeInstructionsText");
+      if (instructionsInput) {
+        instructionsInput.value = currentDish.instructions || "";
+      }
+
 
       loadRecipeIngredients(id);
 
@@ -259,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (response.ok) {
-        if (yieldDisplay) yieldDisplay.textContent = `(Yield: ${newYield} Portions)`;
+        if (yieldDisplay) yieldDisplay.textContent = `Yield: ${newYield} Servings`;
         alert("Recipe batch yield configured successfully!");
         loadRecipeIngredients(currentItemId);
       }
@@ -274,8 +280,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Fetch ingredients, vendor prices, and menu item details  
       const [ingredientsRes, vendorsRes, menuRes] = await Promise.all([
         fetch(`${recipeEndpoint}?menuItemId=${itemId}`),
-        fetch("http://localhost:3000/vendors"),
-        // fetch("https://DNNgesa.github.io/ReciTrak/db.json"),
+        fetch("https://DNNgesa.github.io/ReciTrak/db.json"),
+        // fetch("http://localhost:3000/vendors"),
+
+
         fetch(`${menuItemsEndpoint}/${itemId}`)
       ]);
 
@@ -297,7 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ingredients.forEach(ing => {
         const displayBrand = ing.brand ? ing.brand : "Generic";
         let itemizedCost = 0;
-        let costLabel = `<span class="text-muted small">No vendor contract match</span>`;
+        let costLabel = `<span class="text-muted small">No match found</span>`;
 
         const matchedVendorContract = vendors.find(vnd => {
           const contractItem = (vnd.itemName || "").toLowerCase().trim();
@@ -355,7 +363,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const portionCostRow = document.createElement("tr");
       portionCostRow.className = "table-success border-top";
       portionCostRow.innerHTML = `
-        <td colspan="2" class="fw-bold text-end">Plate Cost per Serving:</td>
+        <td colspan="2" class="fw-bold text-end">Cost per Serving:</td>
         <td colspan="2" class="fw-bold text-success text-start">KES ${costPerPortion.toFixed(2)}</td>
       `;
       recipeTableBody.appendChild(portionCostRow);
@@ -448,6 +456,51 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // Instructions
+  const recipeInstructionsForm = document.getElementById("recipeInstructionsForm");
+  const instructionsFeedback = document.getElementById("instructionsFeedback");
+
+  if (recipeInstructionsForm) {
+    recipeInstructionsForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const currentItemId = activeHiddenId.value;
+      if (!currentItemId) {
+        alert("Please select a dish from Menu Items first!");
+        return;
+      }
+
+      const txtArea = document.getElementById("recipeInstructionsText");
+      const updatedInstructionsText = txtArea ? txtArea.value.trim() : "";
+
+      try {
+        const response = await fetch(`${menuItemsEndpoint}/${currentItemId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ instructions: updatedInstructionsText })
+        });
+
+        if (response.ok) {
+          if (instructionsFeedback) {
+            instructionsFeedback.className = "mt-2 small text-success fw-bold";
+            instructionsFeedback.textContent = "Cooking method instructions updated successfully!";
+            
+            setTimeout(() => { instructionsFeedback.textContent = ""; }, 3000);
+          }
+        } else {
+          throw new Error("Local database server rejected instructions block patch request.");
+        }
+      } catch (error) {
+        console.error("Instructions Save Error:", error);
+        if (instructionsFeedback) {
+          instructionsFeedback.className = "mt-2 small text-danger fw-bold";
+          instructionsFeedback.textContent = "Error saving text block to server.";
+        }
+      }
+    });
+  }
+
+
   loadMenuItems();
 
 });
@@ -457,8 +510,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const inventoryForm = document.getElementById("inventoryForm");
   const inventoryTableBody = document.getElementById("inventoryTableBody");
   const inventoryFeedback = document.getElementById("inventoryFeedback");
-  // const inventoryEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-  const inventoryEndpoint = "http://localhost:3000/inventory";
+  const inventoryEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  // const inventoryEndpoint = "http://localhost:3000/inventory";
 
   // Fetch inventory 
   async function loadInventoryItems() {
@@ -574,8 +627,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const vendorCatalogForm = document.getElementById("vendorCatalogForm");
   const vendorTableBody = document.getElementById("vendorTableBody");
   const vendorFeedback = document.getElementById("vendorFeedback");
-  // const vendorsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-  const vendorsEndpoint = "http://localhost:3000/vendors";
+  const vendorsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  // const vendorsEndpoint = "http://localhost:3000/vendors";
 
   async function loadVendorDirectory() {
     if (!vendorTableBody) return;
@@ -709,8 +762,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const supplyForm = document.getElementById("supplyForm");
   const supplyTable = document.getElementById("supplyTableBody");
   const supplyFeedback = document.getElementById("supplyFeedback");
-  // const supplyEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-  const supplyEndpoint = "http://localhost:3000/supply";
+  const supplyEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  // const supplyEndpoint = "http://localhost:3000/supply";
 
   // Function to pull procurement orders 
   async function loadSupplyOrders() {

@@ -126,7 +126,7 @@
     {
       "menuItemId": "9",
       "name": "Flour",
-      "quantity": 1000,
+      "quantity": 400,
       "unit": "Grams",
       "servingsYield": 8,
       "id": 13,
@@ -209,8 +209,8 @@
     {
       "vendorName": "Carrefour",
       "itemName": "Sugar",
-      "packQuantity": 2,
-      "measurementUnit": "kg",
+      "packQuantity": 2000,
+      "measurementUnit": "grams",
       "unitCost": 289,
       "id": 3
     }

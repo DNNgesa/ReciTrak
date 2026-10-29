@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   });
-
+  
   const initialActiveLink = document.querySelector(".navbar-nav .nav-link.active") || document.querySelector(".navbar-nav .nav-link");
   if (initialActiveLink) {
     const defaultTarget = initialActiveLink.getAttribute("data-target");
@@ -35,12 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuItemForm = document.getElementById("menuItemForm");
   const menuTableBody = document.getElementById("menuTableBody");
   const menuFeedback = document.getElementById("menuFeedback");
-  
-const menuItemsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-
-  // const menuItemsEndpoint = "http://localhost:3000/menuItems";
-  // const recipeEndpoint = "http://localhost:3000/recipes";
+  // const menuItemsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  // const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  const menuItemsEndpoint = "http://localhost:3000/menuItems";
+  const recipeEndpoint = "http://localhost:3000/recipes";
 
   // Function to Load Items
   async function loadMenuItems() {
@@ -231,7 +229,6 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
         yieldBlock.style.setProperty("display", "flex", "important"); 
       }
 
-      // Load matching formula ingredients
       loadRecipeIngredients(id);
 
       pages.forEach(page => page.style.display = page.id === "recipes" ? "block" : "none");
@@ -264,6 +261,7 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
       if (response.ok) {
         if (yieldDisplay) yieldDisplay.textContent = `(Yield: ${newYield} Portions)`;
         alert("Recipe batch yield configured successfully!");
+        loadRecipeIngredients(currentItemId);
       }
     } catch (error) {
       console.error("Yield Save Error:", error);
@@ -273,15 +271,15 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
   // Food Cost Calculation Engine 
   async function loadRecipeIngredients(itemId) {
     try {
-      // Fetch both ingredients and vendor price lists 
+      // Fetch ingredients, vendor prices, and menu item details  
       const [ingredientsRes, vendorsRes, menuRes] = await Promise.all([
         fetch(`${recipeEndpoint}?menuItemId=${itemId}`),
-        // fetch("http://localhost:3000/vendors"),
-        fetch("https://DNNgesa.github.io/ReciTrak/db.json"),
+        fetch("http://localhost:3000/vendors"),
+        // fetch("https://DNNgesa.github.io/ReciTrak/db.json"),
         fetch(`${menuItemsEndpoint}/${itemId}`)
       ]);
 
-      if (!ingredientsRes.ok || !vendorsRes.ok || !menuRes.ok) throw new Error("Database fetch error.");
+       if (!ingredientsRes.ok || !vendorsRes.ok || !menuRes.ok) throw new Error("Database fetch error.");
       
       const ingredients = await ingredientsRes.json();
       const vendors = await vendorsRes.json();
@@ -301,31 +299,22 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
         let itemizedCost = 0;
         let costLabel = `<span class="text-muted small">No vendor contract match</span>`;
 
-          const matchedVendorContract = vendors.find(vnd => {
+        const matchedVendorContract = vendors.find(vnd => {
           const contractItem = (vnd.itemName || "").toLowerCase().trim();
-          const contractVendor = (vnd.vendorName || "").toLowerCase().trim();
-          
           const recipeItem = (ing.name || "").toLowerCase().trim();
-          const recipeBrand = (displayBrand || "").toLowerCase().trim();
 
-          // Returns true if names overlap 
-          const itemsMatch = contractItem.includes(recipeItem) || recipeItem.includes(contractItem);
-          
-          const brandsMatch = recipeBrand === "generic" || contractVendor.includes(recipeBrand) || recipeBrand.includes(contractVendor);
-
-          return itemsMatch && brandsMatch;
+          // Spellings must be identical
+          return contractItem === recipeItem;
         });
-
-
 
         if (matchedVendorContract) {
           const packQty = parseFloat(matchedVendorContract.packQuantity) || 1;
           const contractCost = parseFloat(matchedVendorContract.unitCost) || 0;
           
-          // Cost per single base unit 
+          // Cost per single base unit weight
           const costPerUnit = contractCost / packQty;
           
-          // Total cost for this recipe's required quantity amount
+          // Total cost calculation for ingredient quantity required
           itemizedCost = costPerUnit * parseFloat(ing.quantity);
           totalRecipeCost += itemizedCost;
           
@@ -350,15 +339,16 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
         recipeTableBody.appendChild(row);
       });
 
-      // Compute Cost per Portion
+      // Compute individual portion value 
       const dishYieldCount = currentDish.recipeYield || 1;
       const costPerPortion = totalRecipeCost / dishYieldCount;
 
+      // Total summary calculations inside table footer area
       const batchCostRow = document.createElement("tr");
       batchCostRow.className = "table-light border-top border-2";
       batchCostRow.innerHTML = `
         <td colspan="2" class="fw-bold text-end">Total Batch Cost:</td>
-        <td colspan="2" class="fw-bold text-dark">KES ${totalRecipeCost.toFixed(2)}</td>
+        <td colspan="2" class="fw-bold text-dark text-start">KES ${totalRecipeCost.toFixed(2)}</td>
       `;
       recipeTableBody.appendChild(batchCostRow);
 
@@ -366,16 +356,17 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
       portionCostRow.className = "table-success border-top";
       portionCostRow.innerHTML = `
         <td colspan="2" class="fw-bold text-end">Plate Cost per Serving:</td>
-        <td colspan="2" class="fw-bold text-success">KES ${costPerPortion.toFixed(2)}</td>
+        <td colspan="2" class="fw-bold text-success text-start">KES ${costPerPortion.toFixed(2)}</td>
       `;
       recipeTableBody.appendChild(portionCostRow);
 
     } catch (error) {
-      console.error("Food Cost Engine Mismatch Error:", error);
-      recipeTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Error running linked food cost calculations ledger.</td></tr>`;
+      console.error("Food Cost Engine Error:", error);
+      recipeTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Error running linked food cost calculations.</td></tr>`;
     }
   }
 
+  // Recipe form submission 
   if (recipeIngredientForm) {
     recipeIngredientForm.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -386,7 +377,7 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
       const newIngredient = {
         menuItemId: currentItemId, 
         name: document.getElementById("ingredientName").value.trim(),
-        brand: document.getElementById("ingredientBrand").value.trim(),
+        brand: document.getElementById("ingredientBrand") ? document.getElementById("ingredientBrand").value.trim() : "Generic",
         quantity: parseFloat(document.getElementById("ingredientQty").value),
         unit: document.getElementById("ingredientUnit").value.trim()
       };
@@ -400,7 +391,7 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
 
         if (response.ok) {
           document.getElementById("ingredientName").value = "";
-          document.getElementById("ingredientBrand").value = "";
+          if (document.getElementById("ingredientBrand")) document.getElementById("ingredientBrand").value = "";
           document.getElementById("ingredientQty").value = "";
           document.getElementById("ingredientUnit").value = "";
           loadRecipeIngredients(currentItemId); 
@@ -411,16 +402,15 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
     });
   }
 
-  // Adjust/Edit Individual Recipe Ingredient 
+  // Adjust individual ingredients
   window.editRecipeIngredient = async function(id, menuItemId, name, currentBrand, currentQuantity, currentUnit) {
-    
     const newIngredientName = prompt(`Enter Ingredient Name:`, name);
     if (newIngredientName === null || newIngredientName.trim() === "") return;
 
     const newBrandName = prompt(`Enter Brand Name for "${newIngredientName.trim()}":`, currentBrand);
     if (newBrandName === null || newBrandName.trim() === "") return;
 
-    const newQuantityInput = prompt(`Enter quantity required for ${newIngredientName.trim()} (${currentUnit}):`, currentQuantity);
+    const newQuantityInput = prompt(`Enter quantity required (${currentUnit}):`, currentQuantity);
     if (newQuantityInput === null || newQuantityInput.trim() === "" || isNaN(newQuantityInput)) return;
 
     const newUnitInput = prompt(`Enter measurement unit (e.g., g, ml, pcs):`, currentUnit);
@@ -441,16 +431,14 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
       });
 
       if (response.ok) {
-        loadRecipeIngredients(menuItemId); 
-      } else {
-        throw new Error("Local database server rejected ingredient adjustment request.");
+        loadRecipeIngredients(menuItemId);
       }
     } catch (error) {
       console.error("Recipe Ingredient Update Error:", error);
     }
   };
 
-
+  // Remove individual ingredients
   window.removeIngredient = async function(id, itemId) {
     try {
       const response = await fetch(`${recipeEndpoint}/${id}`, { method: "DELETE" });
@@ -469,8 +457,8 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
   const inventoryForm = document.getElementById("inventoryForm");
   const inventoryTableBody = document.getElementById("inventoryTableBody");
   const inventoryFeedback = document.getElementById("inventoryFeedback");
-  const inventoryEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-  // const inventoryEndpoint = "http://localhost:3000/inventory";
+  // const inventoryEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  const inventoryEndpoint = "http://localhost:3000/inventory";
 
   // Fetch inventory 
   async function loadInventoryItems() {
@@ -518,7 +506,7 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
     }
   }
 
-  // Form Submission 
+  // Inventory Form Submission 
   if (inventoryForm) {
     inventoryForm.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -586,8 +574,8 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
   const vendorCatalogForm = document.getElementById("vendorCatalogForm");
   const vendorTableBody = document.getElementById("vendorTableBody");
   const vendorFeedback = document.getElementById("vendorFeedback");
-  const vendorsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-  // const vendorsEndpoint = "http://localhost:3000/vendors";
+  // const vendorsEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  const vendorsEndpoint = "http://localhost:3000/vendors";
 
   async function loadVendorDirectory() {
     if (!vendorTableBody) return;
@@ -721,9 +709,8 @@ const recipeEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
   const supplyForm = document.getElementById("supplyForm");
   const supplyTable = document.getElementById("supplyTableBody");
   const supplyFeedback = document.getElementById("supplyFeedback");
-  const supplyEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
-   
-  // const supplyEndpoint = "http://localhost:3000/supply";
+  // const supplyEndpoint = "https://DNNgesa.github.io/ReciTrak/db.json";
+  const supplyEndpoint = "http://localhost:3000/supply";
 
   // Function to pull procurement orders 
   async function loadSupplyOrders() {

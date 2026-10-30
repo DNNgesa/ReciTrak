@@ -153,8 +153,42 @@
                     <div id="instructionsFeedback" class="mt-2 small"></div>
                 </form>
             </div>
-
+            
+            <!-- BULK INGREDIENT IMPORTER -->
+             <div class="card p-3 shadow-sm mt-4 border-primary">
+                <h4 class="text-primary">Bulk Ingredient Importer</h4>
+                <p class="text-muted small mb-3">Format must be: <code>Ingredient Name, Quantity, Unit, Brand</code> (one per line).</p>
+                <ul class="nav nav-pills nav-fill mb-3 small" id="bulkImportTabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active py-1" id="paste-tab" data-bs-toggle="pill" data-bs-target="#bulkPasteView" type="button">Paste List</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link py-1" id="file-tab" data-bs-toggle="pill" data-bs-target="#bulkFileView" type="button">CSV File</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="bulkImportContent">
+                    
+            <!-- METHOD 1: PASTE -->
+             <div class="tab-pane fade show active" id="bulkPasteView" role="tabpanel">
+                <div class="mb-3">
+                    <textarea class="form-control font-monospace small" id="bulkIngredientsText" rows="5" placeholder="e.g.,&#10;Flour, 400, Grams, Ajab&#10;Salt, 6, Grams, Kensalt"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary w-100 btn-sm" onclick="processBulkPaste()">Import Pasted List</button>
+            </div>
+            
+            <!-- METHOD 2: FILE UPLOAD -->
+             <div class="tab-pane fade" id="bulkFileView" role="tabpanel">
+                <div class="mb-3">
+                    <label for="bulkCsvFile" class="form-label small text-muted">Select an Excel-exported .csv file:</label>
+                    <input class="form-control form-control-sm" type="file" id="bulkCsvFile" accept=".csv">
+                </div>
+                <button type="button" class="btn btn-primary w-100 btn-sm" onclick="processBulkFile()">Upload & Parse CSV</button>
+            </div>
         </div>
+        <div id="bulkImportFeedback" class="mt-2 small fw-bold"></div>
+    </div>
+    </div>
         
         <!-- RECIPE LIST -->
          <div class="col-md-7">

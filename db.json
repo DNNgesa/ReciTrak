@@ -65,6 +65,14 @@
       "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiQzrVJGuGnCCHP687D_pEQ49eXDO6u76ueDSSXB27N3YySnJnONCjeNY&s=10",
       "recipeYield": 8,
       "instructions": "1.  Combine the flour, salt, and sugar in a large bowl. Add the water and 30 g of vegetable oil, then stir into a rough dough.\n2. First rest: Turn the dough onto a clean surface, cover it with an inverted bowl, and let it rest for 5 minutes.\n3. Knead: Knead the dough for 2 to 3 minutes until soft and slightly sticky. Place it in a lightly oiled bowl, cover it with a damp towel, and let it rest for 30 minutes to 2 hours.\n4. Shape and laminate: Divide the dough into 6 equal portions (about 80–85 g each) and shape them into balls. Roll one ball out into a thin sheet, brush it with a little oil, and dust it with a pinch of flour. Roll it into a long rope, stretch it gently, and coil it into a snail (spiral) shape. Repeat with the remaining balls and let them rest for 5 minutes.\n5. Roll out: Roll each spiral out into a flat disc about 16–18 cm wide and 3–4 mm thick.\n6. Cook: Heat a heavy-bottomed frying pan or tava over medium-high heat. Cook the chapati until bubbles form and the bottom has light golden spots. Flip, brush the top with a little oil, flip again, and brush the other side. Cook for 1 to 2 minutes, turning and pressing gently until golden brown spots appear all over.\n7. Keep warm: Stack the cooked chapatis and cover them immediately with a clean kitchen towel to keep them soft."
+    },
+    {
+      "name": "Creamy Garlic Prawns",
+      "price": 900,
+      "id": 10,
+      "image": "https://assets.epicurious.com/photos/5988e3458e3ab375fe3c0caf/1:1/w_1600,c_limit/How-to-Make-Chicken-Alfredo-Pasta-hero-02082017.jpg",
+      "instructions": "1. Sauté the garlic and prawns: Melt the butter in a large frying pan over medium-high heat. Add the chopped garlic and cook for 1 minute until fragrant. Add the prawns and cook for 2 to 3 minutes until they turn pink.\n2. Add the wine: Pour in the white wine (if using) and let it simmer for about 1 minute to reduce slightly.\n3. Make the sauce: Reduce the heat to medium-low and pour in the cream. Season with salt and pepper. Simmer gently for 2 to 3 minutes until the sauce thickens slightly.\n4. Serve: Garnish with fresh chopped parsley. Serve it on its own with crusty bread, or toss it over angel hair pasta.",
+      "recipeYield": 6
     }
   ],
   "recipes": [
@@ -81,13 +89,6 @@
       "quantity": 1,
       "unit": "Small",
       "id": 6
-    },
-    {
-      "menuItemId": "8",
-      "name": "Boneless Chicken Thigh",
-      "quantity": 200,
-      "unit": "Grams",
-      "id": 7
     },
     {
       "menuItemId": "6",
@@ -165,6 +166,62 @@
       "quantity": 30,
       "unit": "Ml",
       "id": 17
+    },
+    {
+      "menuItemId": "10",
+      "name": "Raw Prawns",
+      "quantity": 500,
+      "unit": "Grams",
+      "brand": "Generic",
+      "id": 18
+    },
+    {
+      "menuItemId": "10",
+      "name": "Butter",
+      "quantity": 2,
+      "unit": "Tablespoons",
+      "brand": "Generic",
+      "id": 19
+    },
+    {
+      "menuItemId": "10",
+      "name": "Garlic",
+      "quantity": 3,
+      "unit": "Cloves",
+      "brand": "Generic",
+      "id": 20
+    },
+    {
+      "menuItemId": "10",
+      "name": "Dry White Wine",
+      "quantity": 0.25,
+      "unit": "Cup",
+      "brand": "Generic",
+      "id": 22
+    },
+    {
+      "menuItemId": "10",
+      "name": "Heavy Cream",
+      "quantity": 0.5,
+      "unit": "Cup",
+      "brand": "Generic",
+      "id": 23
+    },
+    {
+      "menuItemId": "10",
+      "name": "Fresh Parsley",
+      "quantity": 1,
+      "unit": "Bunch",
+      "brand": "Generic",
+      "id": 24
+    },
+    {
+      "menuItemId": "10",
+      "name": "Salt and Pepper",
+      "quantity": 1,
+      "unit": "To Taste",
+      "brand": "Generic",
+      "id": 25
     }
   ],
   "inventory": [

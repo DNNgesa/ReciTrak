@@ -500,6 +500,131 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+    // BULK REPIPE PROCESSING
+  async function submitSingleIngredient(ingredientObj) {
+    const response = await fetch(recipeEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(ingredientObj)
+    });
+    return response.ok;
+  }
+
+  // METHOD 1: PROCESS COPY-PASTED INGREDIENTS 
+  window.processBulkPaste = async function() {
+    const currentItemId = activeHiddenId.value;
+    const feedback = document.getElementById("bulkImportFeedback");
+    const textArea = document.getElementById("bulkIngredientsText");
+
+    if (!currentItemId) {
+      alert("Please select a dish from Menu Items first!");
+      return;
+    }
+    if (!textArea || !textArea.value.trim()) {
+      alert("Please paste some ingredient rows first!");
+      return;
+    }
+
+    feedback.className = "mt-2 small text-warning";
+    feedback.textContent = "Parsing and validating batch records...";
+
+    const lines = textArea.value.split(/\r?\n/);
+    let successCount = 0;
+
+    feedback.textContent = "Syncing batch records with local cloud server...";
+
+    for (const line of lines) {
+      const cleanLine = line.trim();
+      if (!cleanLine) continue; 
+      
+      const columns = cleanLine.split(",");
+      if (columns.length < 3) continue; 
+
+      const ingredientItem = {
+        menuItemId: String(currentItemId),
+        name: columns[0].trim(),
+        quantity: parseFloat(columns[1].trim()) || 0,
+        unit: columns[2].trim(),
+        brand: columns[3] ? columns[3].trim() : "Generic"
+      };
+
+      try {
+        const response = await fetch(recipeEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(ingredientItem)
+        });
+
+        if (response.ok) {
+          successCount++;
+        }
+        
+        // 50ms pause to give json-server ample time to access db.json before writing the next line
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+      } catch (err) {
+        console.error("Batch processing line collision error:", ingredientItem.name, err);
+      }
+    }
+
+    feedback.className = "mt-2 small text-success";
+    feedback.textContent = `Successfully imported all ${successCount} recipe lines into the ledger!`;
+    textArea.value = "";
+    loadRecipeIngredients(currentItemId); 
+  };
+
+
+  // METHOD 2: PROCESS NATIVE CSV FILES 
+  window.processBulkFile = function() {
+    const currentItemId = activeHiddenId.value;
+    const feedback = document.getElementById("bulkImportFeedback");
+    const fileInput = document.getElementById("bulkCsvFile");
+
+    if (!currentItemId) {
+      alert("Please select a dish from Menu Items first!");
+      return;
+    }
+    if (!fileInput || !fileInput.files[0]) {
+      alert("Please select a valid CSV file map first!");
+      return;
+    }
+
+    feedback.className = "mt-2 small text-warning";
+    feedback.textContent = "Reading file records matrix...";
+
+    const reader = new FileReader();
+    reader.readAsText(fileInput.files[0]);
+
+    reader.onload = async function(event) {
+      const csvText = event.target.result;
+      const lines = csvText.split(/\r?\n/); 
+      let successCount = 0;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line.trim() || i === 0 && line.toLowerCase().includes("name")) continue; 
+
+        const columns = line.split(",");
+        if (columns.length < 3) continue;
+
+        const ingredientItem = {
+          menuItemId: currentItemId,
+          name: columns[0].trim(),
+          quantity: parseFloat(columns[1].trim()) || 0,
+          unit: columns[2].trim(),
+          brand: columns[3] ? columns[3].trim() : "Generic"
+        };
+
+        const isSaved = await submitSingleIngredient(ingredientItem);
+        if (isSaved) successCount++;
+      }
+
+      feedback.className = "mt-2 small text-success";
+      feedback.textContent = `Successfully parsed and uploaded ${successCount} entries!`;
+      fileInput.value = ""; 
+      loadRecipeIngredients(currentItemId);
+    };
+  };
 
   loadMenuItems();
 
